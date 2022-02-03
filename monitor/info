@@ -1,0 +1,13 @@
+[2022-01-28 13:57:54,649: WARNING/MainProcess] c:\users\josamuna.josamnet.000\onedrive\documents\projects\pycharmprojects\codepo-backend\venv\lib\site-packages\celery\fixups\django.py:202: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+[2022-01-28 13:58:35,798: ERROR/MainProcess] Process 'SpawnPoolWorker-68' pid:11804 exited with 'exitcode 1'
+[2022-01-28 13:58:35,799: ERROR/MainProcess] Process 'SpawnPoolWorker-67' pid:12072 exited with 'exitcode 1'
+[2022-01-28 13:58:35,802: ERROR/MainProcess] Process 'SpawnPoolWorker-66' pid:11376 exited with 'exitcode 1'
+[2022-01-28 13:58:35,804: ERROR/MainProcess] Process 'SpawnPoolWorker-65' pid:3196 exited with 'exitcode 1'
+<<<<<<< HEAD
+[2022-02-03 00:27:23,065: WARNING/MainProcess] c:\users\josamuna.josamnet.000\onedrive\documents\projects\pycharmprojects\codepo-backend\venv\lib\site-packages\celery\fixups\django.py:202: UserWarning: Using settings.DEBUG leads to a memory
+            leak, never use this setting in production environments!
+  warnings.warn('''Using settings.DEBUG leads to a memory
+=======
+>>>>>>> dc82f5f924a4e4f2d2c7c61dde71b6045dd32e46
