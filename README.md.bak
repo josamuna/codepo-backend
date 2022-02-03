@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [![](https://user-images.githubusercontent.com/46261770/79870277-9a490b00-8397-11ea-88ac-e8dc25124084.png)](https://monitor-engine.com)
 
 # Monitor Engine (Backend)
@@ -19,6 +20,9 @@
 
 #### `1.` Backend 
 La structure du projet reprend les dossiers et fichiers suivants détaillés dans cette arborescence:
+=======
+# codepo-backend
+>>>>>>> aa7e3b6b40f9fca1d144ad6fef35cfc950f010c6
 
 ```
 ..\monitor\
@@ -165,6 +169,7 @@ La structure du projet reprend les dossiers et fichiers suivants détaillés dan
 ├── manage.py
 └── tree.py
 ```
+<<<<<<< HEAD
 
 - `monitor` est le module principal. 
 - `..\monitor\monitor-engine\migrations` répertorie toutes les migrations déjà exécutées dans le projet (Lors de la traduction du modèle vers le Système de Gestion de Base de Données MySQL).
@@ -646,3 +651,5 @@ A ce niveau, seul les paramètres généraux seront donnés de sorte à ne pas m
 ***
 
 Cette partie relève les différentes recommandations susceptibles d'être soulevées pour une quelconque amélioration de la plateforme web afin de satisfaire le besoin des utilisateurs.
+=======
+>>>>>>> aa7e3b6b40f9fca1d144ad6fef35cfc950f010c6
