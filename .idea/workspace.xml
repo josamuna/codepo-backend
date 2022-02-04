@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41be4429-adf2-441e-9c7b-d72be7d7029b" name="Changes" comment="First Build with Moise-14-01-2022">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/monitor/celerybeat-schedule.dat" beforeDir="false" afterPath="$PROJECT_DIR$/monitor/celerybeat-schedule.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/monitor/info" beforeDir="false" afterPath="$PROJECT_DIR$/monitor/info" afterDir="false" />
-    </list>
+    <list default="true" id="41be4429-adf2-441e-9c7b-d72be7d7029b" name="Changes" comment="First Build with Moise-14-01-2022" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,11 +38,15 @@
     <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="23JpIc7nPC5nMKft7zddGMAM3LB" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -157,6 +157,7 @@
       <workItem from="1643627769958" duration="3920000" />
       <workItem from="1643667484195" duration="13601000" />
       <workItem from="1643844342299" duration="739000" />
+      <workItem from="1643928907080" duration="839000" />
     </task>
     <task id="LOCAL-00001" summary="First Build with Moise-14-01-2022">
       <created>1642167014675</created>
@@ -183,6 +184,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="First Build with Moise-14-01-2022" />
     <option name="LAST_COMMIT_MESSAGE" value="First Build with Moise-14-01-2022" />
   </component>
