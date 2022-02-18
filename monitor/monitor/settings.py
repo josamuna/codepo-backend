@@ -123,8 +123,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'monitor_db',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'josam',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306'
     }
@@ -136,7 +136,7 @@ CELERY_BEAT_SCHEDULE = {
     'connect_to_mqtt_broker': {
         'task': 'monitor_engine.tasks.connect_to_mqtt_broker',
         #    'schedule': 1800.0,
-        'schedule': 20.0,
+        'schedule': 60.0,
         #    'schedule': crontab(hour=11, minute=29, day_of_week=2)
     },
 

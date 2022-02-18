@@ -10,13 +10,14 @@ from paho.mqtt import client as mqtt_client
 from .models import Measured, Device, DeviceTracking, Notification
 from .serializers import MeasuredSerializer
 
-# broker = "broker.emqx.io"
+#broker = "broker.emqx.io"
 broker = "mqtt.thingstream.io"
-# topic = "#"
+# topic = "FICT8C79"
 port = 1883
 topic = "DtW"
 
 # generate client ID with pub prefix randomly
+# client_id = f'python-mqtt-700'
 # client_id = f'python-mqtt-{random.randint(0, 1000)}'
 client_id = "device:21934b3c-da9e-431d-8b89-8695b3ac77f2"
 username = "QLOSFKZU5WFI2F9Z1XHR"
@@ -48,7 +49,7 @@ def subscribe(client: mqtt_client):
         msg_processed = process_msg(str(msg.payload))
         print(msg_processed)
         if len(msg_processed) > 5:
-            updateDevice(msg_processed)
+            #updateDevice(msg_processed)
             saveMeasure(msg_processed)
             saveNotification(msg_processed)
             sendMail(msg_processed)
