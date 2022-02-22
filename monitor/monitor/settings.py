@@ -52,9 +52,11 @@ INSTALLED_APPS = [
     # 'channels',    
 ]
 
+# Solve BigAutofield issue error
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
@@ -136,7 +138,7 @@ CELERY_BEAT_SCHEDULE = {
     'connect_to_mqtt_broker': {
         'task': 'monitor_engine.tasks.connect_to_mqtt_broker',
         #    'schedule': 1800.0,
-        'schedule': 60.0,
+        'schedule': 20.0,
         #    'schedule': crontab(hour=11, minute=29, day_of_week=2)
     },
 

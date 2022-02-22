@@ -1,3 +1,12 @@
+#   Connection Return Codes
+#   0: Connection successful
+#   1: Connection refused – incorrect protocol version
+#   2: Connection refused – invalid client identifier
+#   3: Connection refused – server unavailable
+#   4: Connection refused – bad username or password
+#   5: Connection refused – not authorised
+#   6-255: Currently unused.
+
 from datetime import datetime
 
 from celery import shared_task
@@ -10,11 +19,13 @@ from paho.mqtt import client as mqtt_client
 from .models import Measured, Device, DeviceTracking, Notification
 from .serializers import MeasuredSerializer
 
-#broker = "broker.emqx.io"
-broker = "mqtt.thingstream.io"
-# topic = "FICT8C79"
+import time
+
+broker = "broker.emqx.io"
+# broker = "mqtt.thingstream.io"
+topic = "FICT8C79"
 port = 1883
-topic = "DtW"
+# topic = "DtW"
 
 # generate client ID with pub prefix randomly
 # client_id = f'python-mqtt-700'
@@ -24,50 +35,61 @@ username = "QLOSFKZU5WFI2F9Z1XHR"
 password = "eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"
 flag_connected = 0
 
-
+# Handle connection to the Broker
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
-        global flag_connected
         if rc == 0:
-            flag_connected = 1
-            print("Connected to MQTT Broker!!!!!")
+            client.connected_flag = True
+            print("Connected to MQTT Broker '" + broker + "' successfully!!!")
         else:
-            flag_connected = 0
-            print("Failed to connect, return code %d\n", rc)
-
-    client = mqtt_client.Client(client_id)
-    client.username_pw_set(username, password)
+            print("Failed to connect, return code " + str(rc))
+    mqtt_client.Client.connected_flag = False
+    client = mqtt_client.Client(client_id, clean_session=False)
+    # client.username_pw_set(username, password)
     client.on_connect = on_connect
+    client.loop_start()
     # client.tls_set()
     client.connect(broker, port)
+
+    while not client.connected_flag:
+        print('------------Wainting to be connected----------------')
+        time.sleep(1)
+    #client.loop_stop()
     return client
 
 
-def subscribe(client: mqtt_client):
+def subscribe(client):
     def on_message(client, userdata, msg):
         print(str(msg.payload))
         msg_processed = process_msg(str(msg.payload))
         print(msg_processed)
         if len(msg_processed) > 5:
-            #updateDevice(msg_processed)
+            updateDevice(msg_processed)
             saveMeasure(msg_processed)
-            saveNotification(msg_processed)
-            sendMail(msg_processed)
+            saveNotification(msg_processed) 
 
     client.subscribe(topic)
     client.on_message = on_message
+    time.sleep(1)
+    disconnect(client)
+
+# Handle diconnection to the Broker
+def disconnect(client):
+    def on_disconnect(client, userdata, rc):
+        if rc == 0:
+            print("Disconnected to MQTT Broker '" + broker + "' successfully!!!")
+        else:
+            print("Failed to disconnect, return code " + str(rc))
+    client.on_disconnect = on_disconnect
+    client.disconnect()
 
 
 # We can have either registered task
 @shared_task
 def connect_to_mqtt_broker():
-    if flag_connected == 0:
-        print('Attempting to connect...')
-        client = connect_mqtt()
-        subscribe(client)
-        client.loop_start()
-    else:
-        print('already connected')
+    print('Attempting to connect...')
+    client = connect_mqtt()
+    subscribe(client)  
 
 
 # @shared_task 
