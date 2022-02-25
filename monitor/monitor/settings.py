@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_celery_beat',
+    "django_webserver"
     # 'channels',    
 ]
 
@@ -138,7 +139,7 @@ CELERY_BEAT_SCHEDULE = {
     'connect_to_mqtt_broker': {
         'task': 'monitor_engine.tasks.connect_to_mqtt_broker',
         #    'schedule': 1800.0,
-        'schedule': 20.0,
+        'schedule': 120.0,
         #    'schedule': crontab(hour=11, minute=29, day_of_week=2)
     },
 

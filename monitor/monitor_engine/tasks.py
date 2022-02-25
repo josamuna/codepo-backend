@@ -67,6 +67,8 @@ def subscribe(client):
             updateDevice(msg_processed)
             saveMeasure(msg_processed)
             saveNotification(msg_processed) 
+            # This line must be decommented after adding e-mail credentials
+            # sendMail(msg_processed)
 
     client.subscribe(topic)
     client.on_message = on_message
