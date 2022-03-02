@@ -33,7 +33,6 @@ port = 1883
 client_id = "device:21934b3c-da9e-431d-8b89-8695b3ac77f2"
 username = "QLOSFKZU5WFI2F9Z1XHR"
 password = "eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"
-flag_connected = 0
 
 # Handle connection to the Broker
 def connect_mqtt():

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # /shared-exec/start-celery-process.sh
 # Script cannot be used as root user
 
