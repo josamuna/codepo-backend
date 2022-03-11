@@ -7,12 +7,11 @@
 ## Table des Matières
 
 1. [Structure du projet](#Structure-Projet)
-2. [Environnement de développement](#Environnement)
-3. [Dépendances du projet](#Dépendances)
-4. [Exécution du projet](#Exécution)
-5. [Console d'administration](#Console-Administration)
-6. [Déploiement / Hébergement](#Déploiement)
-7. [Récommendations](#Récommandations)
+2. [Dépendances du projet](#Dépendances)
+3. [Exécution du projet](#Exécution)
+4. [Console d'administration](#Console-Administration)
+5. [Déploiement / Hébergement](#Déploiement)
+6. [Récommendations](#Récommandations)
 
 ### Structure du projet
 
@@ -22,123 +21,181 @@
 La structure du projet reprend les dossiers et fichiers suivants détaillés dans cette arborescence:
 
 ```
-../monitor/
+..\monitor\
 │
-├── rptree/
-│   ├── __pycache__/
-│   │   ├── rptree.cpython-36.pyc
-│   │   ├── cli.cpython-36.pyc
-│   │   └── __init__.cpython-36.pyc
-│   │
-│   ├── __init__.py
-│   ├── rptree.py
-│   └── cli.py
-│
-├── monitor_engine/
-│   ├── migrations/
-│   │   ├── 0006_auto_20210714_1443.py
-│   │   ├── 0003_auto_20210708_0919.py
-│   │   ├── 0004_auto_20210708_1246.py
-│   │   ├── 0012_notification_caseid.py
-│   │   ├── 0014_auto_20210723_1042.py
-│   │   ├── 0017_measured_autonomy.py
-│   │   ├── 0018_auto_20210730_0853.py
-│   │   ├── 0011_auto_20210719_1029.py
-│   │   ├── 0008_userpreference.py
-│   │   ├── 0007_auto_20210715_1035.py
-│   │   ├── 0009_auto_20210717_0450.py
-│   │   ├── __init__.py
-│   │   ├── 0016_auto_20210726_1205.py
-│   │   ├── 0021_auto_20220222_2134.py
-│   │   ├── 0010_userpreference_user_id.py
-│   │   ├── 0020_alter_command_id_alter_commandhistory_id_and_more.py
-│   │   ├── 0019_auto_20210730_0857.py
-│   │   ├── 0015_device_total_capacity.py
-│   │   ├── 0005_auto_20210708_1251.py
-│   │   ├── 0001_initial.py
-│   │   ├── 0002_auto_20210708_0918.py
-│   │   └── 0013_auto_20210723_1041.py
-│   │
-│   ├── __pycache__/
-│   │   ├── admin.cpython-36.pyc
-│   │   ├── apps.cpython-36.pyc
-│   │   ├── models.cpython-36.pyc
-│   │   └── __init__.cpython-36.pyc
-│   │
-│   ├── tests.py
-│   ├── codepoBackend
-│   ├── admin.py
-│   ├── consumers.py
-│   ├── tasks.py
-│   ├── routing.py
-│   ├── serializers.py
-│   ├── urls.py
-│   ├── __init__.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── .admin.py.swp
-│   └── views.py
-│
-├── monitor/
-│   ├── __pycache__/
-│   │   ├── wsgi.cpython-36.pyc
-│   │   ├── settings.cpython-36.pyc
-│   │   ├── celery.cpython-36.pyc
-│   │   └── __init__.cpython-36.pyc
+├── monitor\
+│   ├── __pycache__\
+│   │   ├── asgi.cpython-38.pyc
+│   │   ├── celery.cpython-38.pyc
+│   │   ├── celery.cpython-39.pyc
+│   │   ├── settings.cpython-38.pyc
+│   │   ├── settings.cpython-39.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   ├── urls.cpython-39.pyc
+│   │   ├── wsgi.cpython-38.pyc
+│   │   ├── wsgi.cpython-39.pyc
+│   │   ├── __init__.cpython-38.pyc
+│   │   └── __init__.cpython-39.pyc
 │   │
 │   ├── asgi.py
-│   ├── settings.py
 │   ├── celery.py
 │   ├── routing.py
+│   ├── settings.py
 │   ├── urls.py
-│   ├── __init__.py
-│   └── wsgi.py
+│   ├── wsgi.py
+│   └── __init__.py
 │
+├── monitor_engine\
+│   ├── migrations\
+│   │   ├── __pycache__\
+│   │   │   ├── 0001_initial.cpython-38.pyc
+│   │   │   ├── 0001_initial.cpython-39.pyc
+│   │   │   ├── 0002_auto_20210708_0918.cpython-38.pyc
+│   │   │   ├── 0002_auto_20210708_0918.cpython-39.pyc
+│   │   │   ├── 0003_auto_20210708_0919.cpython-38.pyc
+│   │   │   ├── 0003_auto_20210708_0919.cpython-39.pyc
+│   │   │   ├── 0004_auto_20210708_1144.cpython-38.pyc
+│   │   │   ├── 0004_auto_20210708_1246.cpython-38.pyc
+│   │   │   ├── 0004_auto_20210708_1246.cpython-39.pyc
+│   │   │   ├── 0005_auto_20210708_1145.cpython-38.pyc
+│   │   │   ├── 0005_auto_20210708_1251.cpython-38.pyc
+│   │   │   ├── 0005_auto_20210708_1251.cpython-39.pyc
+│   │   │   ├── 0006_auto_20210714_1443.cpython-38.pyc
+│   │   │   ├── 0006_auto_20210714_1443.cpython-39.pyc
+│   │   │   ├── 0007_auto_20210715_1035.cpython-38.pyc
+│   │   │   ├── 0007_auto_20210715_1035.cpython-39.pyc
+│   │   │   ├── 0008_userpreference.cpython-38.pyc
+│   │   │   ├── 0008_userpreference.cpython-39.pyc
+│   │   │   ├── 0009_auto_20210717_0450.cpython-38.pyc
+│   │   │   ├── 0009_auto_20210717_0450.cpython-39.pyc
+│   │   │   ├── 0010_userpreference_user_id.cpython-38.pyc
+│   │   │   ├── 0010_userpreference_user_id.cpython-39.pyc
+│   │   │   ├── 0011_auto_20210719_1029.cpython-38.pyc
+│   │   │   ├── 0011_auto_20210719_1029.cpython-39.pyc
+│   │   │   ├── 0012_notification_caseid.cpython-38.pyc
+│   │   │   ├── 0012_notification_caseid.cpython-39.pyc
+│   │   │   ├── 0013_auto_20210723_1041.cpython-38.pyc
+│   │   │   ├── 0013_auto_20210723_1041.cpython-39.pyc
+│   │   │   ├── 0014_auto_20210723_1042.cpython-38.pyc
+│   │   │   ├── 0014_auto_20210723_1042.cpython-39.pyc
+│   │   │   ├── 0015_device_total_capacity.cpython-38.pyc
+│   │   │   ├── 0015_device_total_capacity.cpython-39.pyc
+│   │   │   ├── 0016_auto_20210726_1205.cpython-38.pyc
+│   │   │   ├── 0016_auto_20210726_1205.cpython-39.pyc
+│   │   │   ├── 0017_measured_autonomy.cpython-38.pyc
+│   │   │   ├── 0017_measured_autonomy.cpython-39.pyc
+│   │   │   ├── 0018_auto_20210730_0853.cpython-38.pyc
+│   │   │   ├── 0018_auto_20210730_0853.cpython-39.pyc
+│   │   │   ├── 0019_auto_20210730_0857.cpython-38.pyc
+│   │   │   ├── 0019_auto_20210730_0857.cpython-39.pyc
+│   │   │   ├── __init__.cpython-38.pyc
+│   │   │   └── __init__.cpython-39.pyc
+│   │   │
+│   │   ├── 0001_initial.py
+│   │   ├── 0002_auto_20210708_0918.py
+│   │   ├── 0003_auto_20210708_0919.py
+│   │   ├── 0004_auto_20210708_1246.py
+│   │   ├── 0005_auto_20210708_1251.py
+│   │   ├── 0006_auto_20210714_1443.py
+│   │   ├── 0007_auto_20210715_1035.py
+│   │   ├── 0008_userpreference.py
+│   │   ├── 0009_auto_20210717_0450.py
+│   │   ├── 0010_userpreference_user_id.py
+│   │   ├── 0011_auto_20210719_1029.py
+│   │   ├── 0012_notification_caseid.py
+│   │   ├── 0013_auto_20210723_1041.py
+│   │   ├── 0014_auto_20210723_1042.py
+│   │   ├── 0015_device_total_capacity.py
+│   │   ├── 0016_auto_20210726_1205.py
+│   │   ├── 0017_measured_autonomy.py
+│   │   ├── 0018_auto_20210730_0853.py
+│   │   ├── 0019_auto_20210730_0857.py
+│   │   └── __init__.py
+│   │
+│   ├── __pycache__\
+│   │   ├── admin.cpython-38.pyc
+│   │   ├── admin.cpython-39.pyc
+│   │   ├── apps.cpython-38.pyc
+│   │   ├── apps.cpython-39.pyc
+│   │   ├── consumers.cpython-38.pyc
+│   │   ├── consumers.cpython-39.pyc
+│   │   ├── models.cpython-38.pyc
+│   │   ├── models.cpython-39.pyc
+│   │   ├── routing.cpython-38.pyc
+│   │   ├── serializers.cpython-38.pyc
+│   │   ├── serializers.cpython-39.pyc
+│   │   ├── tasks.cpython-38.pyc
+│   │   ├── tasks.cpython-39.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   ├── urls.cpython-39.pyc
+│   │   ├── views.cpython-38.pyc
+│   │   ├── views.cpython-39.pyc
+│   │   ├── __init__.cpython-38.pyc
+│   │   └── __init__.cpython-39.pyc
+│   │
+│   ├── .admin.py.swp
+│   ├── admin.py
+│   ├── apps.py
+│   ├── codepoBackend
+│   ├── consumers.py
+│   ├── models.py
+│   ├── routing.py
+│   ├── serializers.py
+│   ├── tasks.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   └── __init__.py
+│
+├── rptree\
+│   ├── __pycache__\
+│   │   ├── cli.cpython-39.pyc
+│   │   ├── rptree.cpython-39.pyc
+│   │   └── __init__.cpython-39.pyc
+│   │
+│   ├── cli.py
+│   ├── rptree.py
+│   └── __init__.py
+│
+├── celerybeat-schedule.bak
 ├── celerybeat-schedule.dat
-├── tree.py
-├── manage.py
-├── package-lock.json
-├── package.json
 ├── celerybeat-schedule.dir
-├── info
-├── start-celery-process.sh
-├── start-python.sh
 ├── dump.rdb
-└── celerybeat-schedule.bak
+├── info
+├── manage.py
+└── tree.py
 ```
 
 - `monitor` est le module principal. 
-- `../monitor/start-celery-process.sh` permet de démarrer `celery-beat` en background task qui à son tour se chargera de lancer le `celery-worker` qui exécute une tâche (Celle de mise à jour des paramètres du device).
-- `../monitor/start-python.sh` démarre le `runserver` de python en background task en mode production en utilisant `gunicorn` et non en mode developpement, afin de prendre en charge le backend.
-- `../monitor/monitor-engine/migrations` répertorie toutes les migrations déjà exécutées dans le projet (Lors de la traduction du modèle vers le Système de Gestion de Base de Données MySQL).
-- `../monitor/monitor/celery.py` pour la gestion de l'écoute du serveur et le cadensement du scheduler.
-- `../monitor/monitor/routing.py` rédirige correctement le .........
-- `../monitor/monitor/settings.py` comprend tous les paramètres de configuration pour la gestion des différentes intéractions entre l'interface utilisateur et les autres parties du système: Assure le bon fonctionnement du Backend.
-- `../monitor/monitor/urls.py` pour la spécification des URL d'accès.
-- `../monitor/monitor/asgi.py` .........
-- `../monitor/monitor-engine/admin.py` .........
-- `../monitor/monitor-engine/apps.py` spécifie le nom de l'application.
-- `../monitor/monitor-engine/codepoBackend` spécifie les adresses pour le serveur distant et celui en local.
-- `../monitor/monitor-engine/consumers.py` .........................
-- `../monitor/monitor-engine/models.py` reprend le modèle (de la partie Modèle du MVC) qui servira au reverse engineering pour la création de la Base de Données en mode commande.
-- `../monitor/monitor-engine/routing.py` ..................................
-- `../monitor/monitor-engine/serializers.py` ..............................
-- `../monitor/monitor-engine/tasks.py` gère les actions automatisées par celery.
-- `../monitor/monitor-engine/urls.py` ..............................
-- `../monitor/monitor-engine/views.py` ..............................
-- `../monitor/rptree/` contient les fichiers nécessaire pour générer le fichier `markdown-file-tree.md` en mode commande en utilisant le fichier `../monitor/tree.py`.
-- `../monitor/manage.py` fichier principal pour l'exécution des taches en mode administrateur (Comme l'installation d'un pacquet, l'exécution de l'application, etc.).
+- `..\monitor\monitor-engine\migrations` répertorie toutes les migrations déjà exécutées dans le projet (Lors de la traduction du modèle vers le Système de Gestion de Base de Données MySQL).
+- `..\monitor\monitor\celery.py` pour la gestion de l'écoute du serveur et le cadensement du scheduler.
+- `..\monitor\monitor\routing.py` rédirige correctement le .........
+- `..\monitor\monitor\settings.py` comprend tous les paramètres de configuration pour la gestion des différentes intéraction entre l'interface utilisateur et les autres parties du système: Assure le bon fonctionnement du Backend.
+- `..\monitor\monitor\urls.py` pour la spécification des URL d'accès.
+- `..\monitor\monitor\asgi.py` .........
+- `..\monitor\monitor-engine\admin.py` .........
+- `..\monitor\monitor-engine\apps.py` spécifie le nom de l'application.
+- `..\monitor\monitor-engine\codepoBackend` spécifie les adresses pour le serveur distant et celui en local.
+- `..\monitor\monitor-engine\consumers.py` .........................
+- `..\monitor\monitor-engine\models.py` reprend le modèle (de la partie Modèle du MVC) qui servira au reverse engineering pour la création de la Base de Données en mode commande.
+- `..\monitor\monitor-engine\routing.py` ..................................
+- `..\monitor\monitor-engine\serializers.py` ..............................
+- `..\monitor\monitor-engine\tasks.py` ..............................
+- `..\monitor\monitor-engine\urls.py` ..............................
+- `..\monitor\monitor-engine\views.py` ..............................
+- `..\monitor\rptree\` contient les fichiers nécessaire pour générer le fichier `markdown-file-tree.md` en mode commande en utilisant le fichier `..\monitor\tree.py`.
+- `..\monitor\manage.py` fichier principal pour l'exécution des taches en mode administrateur (Comme l'installation d'un pacquet, l'exécution de l'application, etc.).
 
 Pour arriver à générer le fichier relatif à l'arborescence des dossiers et fichiers `markdown-file-tree.md` ([Voir dans ce repository](https://github.com/javitocor/Python-Direcory-Tree-Generator)), procéder comme suit:
 - Se positionner dans le répertoire principale du module: 
 
     ```
-    cd codepo-backend/monitor/
+    cd codepo-backend\monitor\
     ```
 - Taper la commande: 
     
     ```
-    python3 tree.py ../monitor -o ../markdown-file-tree.md
+    python tree.py ..\monitor -o ..\markdown-file-tree.md
     ```
 
 #### `2.` Frontend 
@@ -344,38 +401,38 @@ La structure du projet reprend les dossiers et fichiers suivants détaillés dan
 
 
 - `codepo-frontend` est le répertoire principal du projet. 
-- `../public/favicon.ico` est le fichier correspondant à l'icône de l'application.
-- `../src` ...........................
-- `../src/assets` ...........................
-- `../src/components` ...........................
-- `../src/icons` ...........................
-- `../src/image` ...........................
-- `../src/layouts` ...........................
-- `../src/layouts\DashboardLayout` ...........................
-- `../src/layouts\NavBar` ...........................
-- `../src/layouts\Profile` ...........................
-- `../src/layouts\MainLayout` ...........................
-- `../src/theme` ...........................
-- `../src/utils` ...........................
-- `../src/views` ...........................
-- `../src/views/Login` ...........................
-- `../src/views/Redux` ...........................
-- `../src/views/User` ...........................
-- `../src/views/commande` ...........................
-- `../src/views/corbeille` ...........................
-- `../src/views/corbeille/CorbeilleView` ...........................
-- `../src/views/devices` ...........................
-- `../src/views/corbeille/DeviceListView` ...........................
-- `../src/views/errors` ...........................
-- `../src/views/maps` ...........................
-- `../src/views/corbeille/MapView` ...........................
-- `../src/views/reports` ...........................
-- `../src/views/corbeille/DaschboardView` ...........................
-- `../src/views/search` ...........................
-- `../src/views/corbeille/SearchDeviceListView` ...........................
-- `../src/views/services` ...........................
-- `../src/views/settings` ...........................
-- `../src/views/settings/SettingsView` ...........................
+- `..\public\favicon.ico` est le fichier correspondant à l'icône de l'application.
+- `..\src` ...........................
+- `..\src\assets` ...........................
+- `..\src\components` ...........................
+- `..\src\icons` ...........................
+- `..\src\image` ...........................
+- `..\src\layouts` ...........................
+- `..\src\layouts\DashboardLayout` ...........................
+- `..\src\layouts\NavBar` ...........................
+- `..\src\layouts\Profile` ...........................
+- `..\src\layouts\MainLayout` ...........................
+- `..\src\theme` ...........................
+- `..\src\utils` ...........................
+- `..\src\views` ...........................
+- `..\src\views\Login` ...........................
+- `..\src\views\Redux` ...........................
+- `..\src\views\User` ...........................
+- `..\src\views\commande` ...........................
+- `..\src\views\corbeille` ...........................
+- `..\src\views\corbeille\CorbeilleView` ...........................
+- `..\src\views\devices` ...........................
+- `..\src\views\corbeille\DeviceListView` ...........................
+- `..\src\views\errors` ...........................
+- `..\src\views\maps` ...........................
+- `..\src\views\corbeille\MapView` ...........................
+- `..\src\views\reports` ...........................
+- `..\src\views\corbeille\DaschboardView` ...........................
+- `..\src\views\search` ...........................
+- `..\src\views\corbeille\SearchDeviceListView` ...........................
+- `..\src\views\services` ...........................
+- `..\src\views\settings` ...........................
+- `..\src\views\settings\SettingsView` ...........................
 
 Pour arriver à générer le fichier relatif à l'arborescence des dossiers et fichiers `markdown-file-tree.md` ([Voir dans ce repository](https://github.com/michalbe/md-file-tree)), procéder comme suit:
 
@@ -384,7 +441,7 @@ Pour arriver à générer le fichier relatif à l'arborescence des dossiers et f
 - Se positionner dans le répertoire principale du projet: 
 
     ```
-    cd codepo-frontend/
+    cd codepo-frontend\
     ```
     
 - Installer le paquet nécessaire pour la génération de l'arborescence: 
@@ -398,144 +455,24 @@ Pour arriver à générer le fichier relatif à l'arborescence des dossiers et f
     ```
     md-file-tree > markdown-file-tree.md
     ```
-
-### Environnement de développement
-
-***
-
-Le projet dans son intégralité (***Frontend*** et ***Backend***) a été développé avec la plateforme [Linux Mint 19.3 Tricia](https://linuxmint.com/edition.php?id=274) qui est basé sur [Ubuntu 18.04 bionic](https://releases.ubuntu.com/18.04/). 
-L'editeur de texte utilisé pour le projet est [Visual Studio Code](https://code.visualstudio.com/#alt-downloads) en sa version `1.64.2`, et le navigateur web Mozilla Firefox For Linux Mint en sa version `97.0.1`.
     
 ### Dépendances du projet
 
 ***
 
-Pour arriver à effectuer un **build** du projet, un certain nombre des dépendances est requise (Néanmoins avec un IDE telque [PyCharm](https://www.jetbrains.com/fr-fr/pycharm/) l'installation de ces dernières devient plus au moins aisée: *Quand bien même cette option semble plus au moins aisée, elle peut conduire à beaucoup d'incompatibilités comme cela a été le cas; et par conséquent Linux a servis de dernier recours*) suivant cet ordre:
+Pour arriver à effectuer un **build** du projet, un certain nombre des dépendances est requis (Néanmoins avec un IDE telque [PyCharm](https://www.jetbrains.com/fr-fr/pycharm/) l'installation de ces dernières devient plus au moins aisée.) suivant cet ordre:
 
-#### `1.` Serveur Linux (Linux Mint ou autre) 
+- `python` (v3.9) ou ultérieure: Doit être installé pour la prise en charge du projet.
+- `django` (v3.2.11) ou ultérieure: Doit être installé pour la prise en charge du projet.
+- `pip` (v21.1.2) ou ultérieure: ***P***ip ***I***nstalls ***P***ython, un gestionnaire de paquets utilisé pour installer et gérer des paquets écrits en Python.
+- `djangorestframework`	(v3.13.1).
+- `django-cors-headers`	(v3.11.0).
+- `mysqlclient` (v2.1.0): Pour la prise en charge de la création de la Base de Données MySQL par l'intermédiaire du model.
+- `channels` (v3.0.4).
+- `paho-mqtt` (v1.6.1): Prise en charge du client MQTT.
+- `djangorestframework-simplejwt` (v5.0.0).
 
-- Avant tout, effectué la mise à jour des paquets du Système d'Exploitation en tapant la commande :
-
-    ```
-    sudo apt-get update
-    ```
-    
-- `python` (v3.8.3) et ***P***ip ***I***nstalls ***P***ython ou `pip` (v20.1.1 ou v21.3.1) : Pour la prise en charge du Backend en Django pour le premier et la gestion des paquets installés, et écrits en Python; pour le second. Pour l'installer, taper la commande suivante pour l'installer:
-
-    ```
-    sudo apt-get install python3 python3-pip
-    ```
-    
-    vérifier la version par la commande:
-    
-    ```
-    python3 --version
-    ```
-    
-    Pour python et:
-    
-    ```
-    pip3 --version
-    ```
-    
-    Pour pip.
-    
-    En raison des problèmes qui peuvent surgir lors du changement de la version par défaut de python (`3.8.3` pour notre cas en lieu et place de `3.6` qui s'installe par defaut avec la commande précédente et de `2.7` qui vient par défaut avec le Système d'exploitation installé), une alternative est d'installer [Anaconda3](https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh) (v1.7.2) qui s'installe par défaut avec la version `3.8.3 de python`.
-- `redis-server` (v4.0.9) ou ultérieure: Permet de manager celery (worker et beat). Pour l'installer, taper la commande suivante:
-
-    ```
-    sudo apt-get install redis-server
-    ```
-
-- `gunicorn` (version par défaut) : Permet la prise en charge du démarrage de python en production. Pour l'installer, taper la commande suivante:
-
-    ```
-    sudo apt-get install gunicorn
-    ```
-
-#### `2.` Python et Django
-
-Pour prendre en charge le démarrage de python ainsi que le déploiement du projet Django, les dépendances suivantes sont requises dans l'ordre de leur enumération:
-
-- `django` (v3.2.12) : Assure la prise en charge du backend après le déploiement dans le serveur. Pour l'installer, taper la commande:
-
-    ```
-    pip3 install -Iv django==3.2.12
-    ```
-    
-    Vérifier la version par la commande:
-    
-    ```
-    django-admin --version
-    ```
-
-- `celery` (v4.4.2) : Doit être installé pour la prise en charge de certaines taches utilisant la commande `celery`. Pour l'installer, taper la commande:
-
-    ```
-    pip3 install -Iv celery==4.4.2
-    ```
-
-- `channels` (version par défaut) : Pour l'installer, taper la commande suivante:
-
-    ```
-    pip3 install channels
-    ```
-
-- `django-cors-headers` (version par défaut) : Pour l'installer, taper la commande suivante:
-
-    ```
-    pip3 install django-cors-headers
-    ```
-
-- `django-rest-framework` (version par défaut) : Pour l'installer, taper la commande suivante:
-
-    ```
-    pip3 install djangorestframework
-    ```
-    
-- `celery beat` (v2.2.0) : Permet le démarrage de la tache de fonds avec celery worker. Pour l'installer taper la commande suivante:
-
-    ```
-    pip3 install -Iv django-celery-beat==2.2.0
-    ```
-  
- - `mysqlclient` (version par défaut) : Pour la prise en charge de la création de la Base de Données MySQL par l'intermédiaire du model. Pour l'installer taper la commande suivante:
-
-    ```
-    pip3 install mysqlclient
-    ```
-    
-    Si la commande échoue, installer les dépendances requises par la commande:
-    
-    ```
-    sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
-    ```
-    
-- `djangorestframework-simplejwt` (version par défaut) : Pour l'installer taper la commande suivante:
-
-    ```
-    pip3 install djangorestframework-simplejwt
-    ```
-    
-- `paho-mqtt` (version par défaut) : Permet la prise en charge du client MQTT facilitant la publication et la réception des messages entre le module électronique et Logiciel. Pour l'installer taper la commande suivante:
-
-    ```
-    pip3 install paho-mqtt
-    ```
-    
-- `redis` (version par défaut) : Module python pour redis. Pour l'installer taper la commande suivante:
-
-    ```
-    pip3 install redis
-    ```
-    
-- `django-webserver` et `gunicorn` (version par défaut) : Module python pour la prise en charge de gunicorn. Pour l'installer taper la commande suivante:
-
-    ```
-    pip3 install django-webserver gunicorn
-    ```
-
-Tous les autres paquets sous-jacents sont installées automatiquement, et rien d'autre n'est requis pour cela.
+Certains autres paquets sous-jacents sont installées automatiquement, et rien d'autre n'est requis pour cela.
 
 >***Les dépendances du Frontend sont totatement gérées par l'utilitaire `npm` qui se charge d'installer tout ce qui est nécessaire pour le projet, voir corriger des failles de sécurité et autres***.
 
@@ -547,16 +484,16 @@ Tous les autres paquets sous-jacents sont installées automatiquement, et rien d
 
 L'exécution du projet s'effectue de la façon suivante:
 
-- Se positionner dans le répertoire `codepo-backend/monitor/` :
+- Se positionner dans le répertoire `..\monitor\` :
 
     ```
-    cd codepo-backend/monitor/
+    cd codepo-backend\monitor\
     ```
     
 - Taper la commande:
 
     ```
-    python3 manage.py runserver
+    python manage.py runserver
     ```
     
     Si tout s'est bien passé, vous devez avoir ceci au niveau de l'interface de commande:
@@ -570,51 +507,24 @@ L'exécution du projet s'effectue de la façon suivante:
     Quit the server with CTRL-BREAK.
     ```
     
-- Pour démarrer python avec la prise en charge de de gunicorn (***En production***), taper la commande suivante (Dans le répertoire contenant le module de l'application):
-
-    ```
-    cd codepo-backend/monitor
-    python3 manage.py gunicorn --bind 0.0.0.0:8000
-    ```
-
-- Le scripte linux suivant (A retrouver dans le fichier `codepo-backend/monitor/start-python.sh`) permet de lancer cette en background et de le logger dans un fichier log:
-
-    ```
-    #!bin/bash
-    # Specify the project directory
-    project_dir="codepo-backend/monitor"
-    cd "$(dirname $HOME/$project_dir/.)"
-    
-    echo "******************************************************************************************************"
-    echo "********`date`****************START PYTHON TASK*********************************"
-    python3 $HOME/$project_dir/manage.py gunicorn --bind 0.0.0.0:8000 >> "$HOME/log/python/python-monitor.log" 2>&1 &
-    echo "*********************************************SUCCESSFULY STARTED**************************************"
-    ```
-
-- Exécuter ce fichier sur le shell par la commande suivante :
-
-    ```
-    sh codepo-backend/monitor/start-python.sh
-    ```
-    
 Il faudra se rassurer que les paramètres de la Base de Données sont corrects et qu'un ***superutilisateur*** a été créé à cette fin (Cela permettra d'accéder facilement à la console d'administration de Django). Pour cela, suivre les étapes suivantes (Si c'est déjà le cas, démarrer directement `le scheduler` et continuer le reste des étapes.):
 
 - Créer le schéma de la Base de Données par la commande :
 
     ```
-    python3 manage.py makemigrations
+    python manage.py makemigrations
     ```
     
 - Créer la Base de Données par la commande :
 
     ```
-    python3 manage.py migrate
+    python manage.py migrate
     ```
     
 - Créer un super-utilisateur par la commande:
 
     ```
-    python3 manage.py createsuperuser
+    python manage.py createsuperuser
     ```
  
 - Spécifier successivement le `nom d'utilisateur`, l' `adresse email` et le `mot de passe` pour l'administration.
@@ -632,65 +542,7 @@ Il faudra se rassurer que les paramètres de la Base de Données sont corrects e
     ```
     celery -A monitor beat -l info
     ```  
-  
-- Pour une prise en charge aisée du scheduler et de l'automatisation des taches, le script linux suivant facilite le démarrage de ***celery-beat*** et de ***celery-worker*** (A retrouver dans le fichier `codepo-backend/monitor/start-celery-process.sh`) en background tout en gardant une trace dans des fichiers log :
-   
-    ```
-    #!/bin/sh
-    # /shared-exec/start-celery-process.sh
-    # Script cannot be used as root user
     
-    # Specify the project directory
-    project_dir="codepo-backend/monitor"
-    # Get the current user
-    user=$USER
-    if [ user != "root" ] 
-    then  
-    	# Force kill all running celery process
-        pkill celery
-    	# Kill celery worker if it was started with a certain PID
-    	# celery -A monitor multi stop worker-monitor --loglevel=INFO --pidfile="$HOME/run/celery/worker-monitor.pid" --logfile="$HOME/log/celery/worker-monitor.log"
-    	celery_worker_pid=`cat $HOME/run/celery/worker-monitor.pid`
-    	if [ ! -z $celery_worker_pid ]
-    	then
-    		# If the celery worker PID file is not null, kill also the celery worker process corresponding to the one located in the pid file
-    		kill $celery_worker_pid
-    		echo "-------`date`------------------Stop celery worker PID $celery_worker_pid-----------------------------"
-    	fi
-    	
-    	celery_beat_pid=`cat $HOME/run/celery/beat-monitor.pid`
-    	if [ ! -z $celery_beat_pid ]
-    	then
-    		# If the celery beat PID file is not null, kill also the celery worker process corresponding to the one located in the pid file
-    		kill $celery_beat_pid
-    		echo "-------`date`-------------------Stop celery beat PID: $celery_beat_pid------------------------------"
-    	fi
-    
-    	# Change the current directory to be in the expected project directory
-    	cd "$(dirname $HOME/$project_dir/.)"
-    	# Starting celery worker task as a background task
-    	sleep 2s
-    	celery -A monitor multi start worker-monitor --loglevel=INFO --pidfile="$HOME/run/celery/worker-monitor.pid" --logfile="$HOME/log/celery/worker-monitor.log" &
-    	sleep 2s
-    	echo "*****`date`*************Celery worker started successfuly in background************************"
-    	
-    	# wait 2 seconds and then start celery beat task as a background task
-    	sleep 2s
-    	celery -A monitor beat --detach --loglevel=INFO --pidfile="$HOME/run/celery/beat-monitor.pid" --logfile="$HOME/log/celery/beat-monitor.log" &
-    	sleep 2s
-    	echo "*****`date`*************Celery beat started successfuly in background**************************"
-    else
-        echo "You can't run this file as root user !!!"
-        exit 1                                  
-    fi
-    ```
-
-- Exécuter ce fichier sur le shell par la commande suivante :
-
-    ```
-    sh codepo-backend/monitor/start-celery-process.sh
-    ```
-   
 #### `2.` Frontend
 
 Pour ce qui est du Frontend (Ou de la partie affichable à l'utilisateur), ***son exécution se fait après que le Backend le soit*** et non l'inverse, car elle dépends de ce dernier et non l'inverse. Ainsi pour exécuter le Backend, procéder comme suit :
@@ -704,17 +556,18 @@ Pour ce qui est du Frontend (Ou de la partie affichable à l'utilisateur), ***so
  En effet, l'utilitaire `npm` prends en charge bon nombre d'exécution et se charge pas mal de toutes les dépendances nécessaires au fonctionnement correcte de cette partie (Interface Utilisateur ou UI).  
  Ainsi, si tout s'es bien passé lors de l'xécution de cette commande et que le Backend est bien exécuté, `la page de Login` du site Web devrait s'afficher sur votre navigateur par défaut via le lien [http://localhost:3000/Login](http://localhost:3000/Login) si l'exécution est en local, ou [https://monitor-engine.com/](https://monitor-engine.com/) pour un accès directement du serveur en production.
  
-- Ainsi, la console de l'IDE devrait afficher quelque chose semblable à ceci:
+- Ainsi la console de l'IDE devrait afficher quelque chose de semblable à ceci:
 
     ```
     .........
      Line 34:8:  'notifyInformation' is defined but never used  no-unused-vars
 
-    src/views/search/SearchDeviceListView/HistoryDetaille.js
+    src\views\search\SearchDeviceListView\HistoryDetaille.js
       Line 23:6:  React Hook useEffect has a missing dependency: 'props.id'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
     
     Search for the keywords to learn more about each warning.
     To ignore, add // eslint-disable-next-line to the line before.
+
     ```
 
 ### Console d'administration
@@ -723,14 +576,13 @@ Pour ce qui est du Frontend (Ou de la partie affichable à l'utilisateur), ***so
 
 Pour accéder à la ***console d'administration de Django***, procéder ainsi:
 
-- Démarrer le projet Backend par les commandes :
+- Démarrer le projet Backend par la commande :
    
     ```
-    cd codepo-backend/monitor
-    python3 manage.py runserver
+    python manage.py runserver
     ```
  
-- Aller dans un navigateur web et taper l'URL suivante :
+- aller dans un navigateur web et taper l'URL suivante:
    
     ```
     http://localhost:8000/admin/
@@ -750,25 +602,30 @@ A ce niveau, seul les paramètres généraux seront donnés de sorte à ne pas m
 
 #### `1.` Etape 1
 
-- Build du code du Backend (Et si necessaire, changer le contenu des fichiers utiles pour aller dans le serveur).
+- Build le code du Backend (Et si necessaire, changer le contenu des fichiers utiles pour aller dans le serveur).
 - Uploader tout le code source du Backend dans un serveur (***VPS*** par exemple).
 
 #### `2.` Etape 2
 
 - Exécuter le Backend dans le serveur (Pour cela, installer en cas de besoin les dépendances nécessaires, Cfr. section ***`Dépendances du projet`***):
     
-    ***Exécution de python (En shell script) pour rendre le backend disponible***.
+    ***Exécution du projet***.
     ```
-    sh backend-server-path/start-python.sh
+    cd monitor
+    python manage.py runserver
+    ```   
+    
+    ***Démarrage Scheduler***.
     ```
+    cd monitor
+    celery -A monitor worker -l info
+    ```  
     
-    `backend-server-path` sera le chemin d'accès du fichier `manage.py` dans le serveur de déploiement du Backend.
-    
-    ***Démarrage Scheduler (En shell script) pour exécuter des taches***.
-    
+    ***Démarrer l'écouteur des requêtes***.
     ```
-    sh codepo-backend/monitor/start-celery-process.sh
-    ``` 
+    cd monitor
+    celery -A monitor beat -l info
+    ```  
 
 #### `3.` Etape 3
 
@@ -778,24 +635,11 @@ A ce niveau, seul les paramètres généraux seront donnés de sorte à ne pas m
     npm run build
     ```  
     
-- Uploader le dossier `codepo-frontend/build/` résultant du build dans le serveur.
+- Uploader le dossier `codepo-frontend\build\` résultant du build dans le serveur.
 
 #### `4.` Etape 4
 
 - Accéder au logiciel en tapant l'URL appropriée: [https://monitor-engine.com](https://monitor-engine.com).
-
-#### `5.` Etape 5
-
-D'autres taches doivent être directement exécutée dans le serveur pour qu'il soit pleinement opérationnel:
-- Installation de `nginx` : Permettant de prendre en charge le frontend.
-    
-    ```
-    sudo apt-get install nginx
-    ```
-        
-- Configuration de nginx.
-- Configuration de la prise en charge des certificats SSL (***S***ecure ***S***ocket ***L***ayer) pour la sécurité de la navigation.
-- Configuration de la Base de Données de sorte à ne pas l'utiliser en tant que `root`, mais créer un autre utilisateur qui sera propriétaire de la BD à gérer.
 
 ### Récommendations
 

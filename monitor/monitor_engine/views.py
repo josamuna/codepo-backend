@@ -42,7 +42,7 @@ password = "eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getAllDevices():
+def getAllDevices(request):
     devices = Device.objects.filter(deleted=False)
     devices_serializer = DeviceSerializer(devices, many=True)
     return JsonResponse(devices_serializer.data, safe=False)

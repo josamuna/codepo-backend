@@ -20,35 +20,92 @@ from .models import Measured, Device, DeviceTracking, Notification
 from .serializers import MeasuredSerializer
 
 import time
-
-broker = "broker.emqx.io"
-# broker = "mqtt.thingstream.io"
-topic = "FICT8C79"
-port = 1883
-# topic = "DtW"
+import threading
 
 # generate client ID with pub prefix randomly
-# client_id = f'python-mqtt-700'
 # client_id = f'python-mqtt-{random.randint(0, 1000)}'
-client_id = "device:21934b3c-da9e-431d-8b89-8695b3ac77f2"
-username = "QLOSFKZU5WFI2F9Z1XHR"
-password = "eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"
 
-# Handle connection to the Broker
+# Clients list for test
+clients = [
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-100", "topic":"FICT8C79", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-200", "topic":"FICT8C79", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-300", "topic":"FICT8C79", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"}
+]
+
+# Clients list for production
+""" clients = [
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:21934b3c-da9e-431d-8b89-8695b3ac77f2", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:ec893223-df92-404b-ba96-c7c085cb16f9", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:9c58f221-1205-4702-83ba-3408d399c587", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
+] """
+
+# Set number of clients
+nbr_clients = len(clients)
+
+# Handle multi-connections to the Broker
+def connect_mqtts():
+    all_clients = []
+    def on_connect(client, userdata, flags, rc):
+        if rc == 0:
+            client.connected_flag = True
+            print("'" + c["client_id"] + "' Connected to MQTT Broker '" + c["broker"] + "' successfully!!!")
+        else:
+            print("Failed to connect client '" + c["client_id"] + "', return code " + str(rc))
+    
+    for c in clients:
+        mqtt_client.Client.connected_flag = False
+        client = mqtt_client.Client(c["client_id"], clean_session=False)
+        # client.username_pw_set(c["username"], c["password"])
+        client.on_connect = on_connect
+        client.loop_start()
+        client.connect(c["broker"], c["port"])
+
+        while not client.connected_flag:
+            print('------------Wainting to be connected----------------')
+            time.sleep(1)
+        
+        all_clients.append(client)
+        
+    return all_clients
+
+
+# Subscribe multiples clients to topic
+def subscribes(all_clients):
+    def on_message(client, userdata, msg):
+        print(str(msg.payload))
+        msg_processed = process_msg(str(msg.payload))
+        print(msg_processed)
+        if len(msg_processed) > 5:
+            result = updateDevice(msg_processed)
+            if result:
+                saveMeasure(msg_processed)
+                saveNotification(msg_processed) 
+                # This line must be decommented after adding e-mail credentials
+                # sendMail(msg_processed)
+    i = 0
+    for c in all_clients:
+        c.subscribe(clients[i]["topic"])
+        c.on_message = on_message
+        time.sleep(1)
+        disconnect(c, i)
+        i = i + 1
+
+
+# Handle one connection to the Broker
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             client.connected_flag = True
-            print("Connected to MQTT Broker '" + broker + "' successfully!!!")
+            print("'" + clients[0]["client_id"] + "' Connected to MQTT Broker '" + clients[0]["broker"] + "' successfully!!!")
         else:
-            print("Failed to connect, return code " + str(rc))
+            print("Failed to connect client '" +  clients[0]["client_id"] + "', return code " + str(rc))
     mqtt_client.Client.connected_flag = False
-    client = mqtt_client.Client(client_id, clean_session=False)
+    client = mqtt_client.Client(clients[0]["client_id"], clean_session=False)
     # client.username_pw_set(username, password)
     client.on_connect = on_connect
     client.loop_start()
     # client.tls_set()
-    client.connect(broker, port)
+    client.connect(clients[0]["broker"], clients[0]["port"])
 
     while not client.connected_flag:
         print('------------Wainting to be connected----------------')
@@ -57,40 +114,48 @@ def connect_mqtt():
     return client
 
 
+# Subscribe one client to topic
 def subscribe(client):
     def on_message(client, userdata, msg):
         print(str(msg.payload))
         msg_processed = process_msg(str(msg.payload))
         print(msg_processed)
         if len(msg_processed) > 5:
-            updateDevice(msg_processed)
-            saveMeasure(msg_processed)
-            saveNotification(msg_processed) 
-            # This line must be decommented after adding e-mail credentials
-            # sendMail(msg_processed)
+            result = updateDevice(msg_processed)
+            if result:
+                saveMeasure(msg_processed)
+                saveNotification(msg_processed) 
+                # This line must be decommented after adding e-mail credentials
+                # sendMail(msg_processed)
 
-    client.subscribe(topic)
+    client.subscribe(clients[0]["topic"])
     client.on_message = on_message
     time.sleep(1)
-    disconnect(client)
+    disconnect(client, 0)
 
-# Handle diconnection to the Broker
-def disconnect(client):
+# Handle diconnection (Single or multiple) to the Broker
+def disconnect(client, num_client):
     def on_disconnect(client, userdata, rc):
         if rc == 0:
-            print("Disconnected to MQTT Broker '" + broker + "' successfully!!!")
+            print("'" + clients[num_client]["client_id"] + "' Disconnected to MQTT Broker '" + clients[num_client]["broker"] + "' successfully!!!")
         else:
-            print("Failed to disconnect, return code " + str(rc))
+            print("Failed to disconnect client '" +  clients[num_client]["client_id"] + "', return code " + str(rc))
     client.on_disconnect = on_disconnect
     client.disconnect()
 
 
-# We can have either registered task
+# We can have either registered task | Start task
 @shared_task
 def connect_to_mqtt_broker():
-    print('Attempting to connect...')
+    """ print('Attempting to connect...')
     client = connect_mqtt()
-    subscribe(client)  
+    subscribe(client)   """
+
+
+    # Multiples connection
+    print('Attempting to connect...')
+    all_clients = connect_mqtts()
+    subscribes(all_clients)
 
 
 # @shared_task 
@@ -134,8 +199,10 @@ def updateDevice(msg_processed):
 
                         my_device.save()
                         print('Device properties updated')
+                        return True
     except Exception as exc:
         print(f"Error occured when trying to update device properties : {exc}")
+        return False
 
 
 def saveMeasure(msg_processed):
