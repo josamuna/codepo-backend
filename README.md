@@ -11,7 +11,8 @@
 3. [Exécution du projet](#Exécution)
 4. [Console d'administration](#Console-Administration)
 5. [Déploiement / Hébergement](#Déploiement)
-6. [Récommendations](#Récommandations)
+6. [Modes de fonctionnement](Modes-fonctionnement)
+7. [Récommendations](#Récommandations)
 
 ### Structure du projet
 
@@ -640,6 +641,21 @@ A ce niveau, seul les paramètres généraux seront donnés de sorte à ne pas m
 #### `4.` Etape 4
 
 - Accéder au logiciel en tapant l'URL appropriée: [https://monitor-engine.com](https://monitor-engine.com).
+
+### Modes de fonctionnement
+
+***
+
+Pour un bon fonctionnement du système, ***quatre modes*** de fonctionnement ont été prévus, à savoir `BAT_GPS`, `BAT`, `ECONOMY` et `CALIBRATION` dont le comportement est décris ici-bàs:
+- **BAT_GPS**: Permet au device d'envoyer à la plateforme web non seulement les informations concernant le SOC (**S**tate **O**f **C**harge ou le niveau de la batterie), mais aussi les informations GPS (***Latitude*** et ***Longitude***) à des intervalles de temps spécifiques appelé ***intervalle d'envoi*** (Correspondant à `Sending interval` exprimé en heure, et se trouvant sur l'interface graphique, précisement dans les paramètres de commande du device). Le paramètre `Sampling interval` ou ***intervalle de prélèvement*** corresponds à l'intervalle de temps (Exprimé en secondes) pendant lequel le microcontrolleur (Du module électronique) doit prélever le SOC ou niveau de la batterie (Option à retrouver sur l'interface graphique, dans les paramètres de commande du device).
+- **BAT**: Permet au device d'envoyer à la plateforme web uniquement les informations du SOC à des intervalles spécifiques (Cfr. point précédent). 
+- **ECONOMY**: Est le mode pour lequel les ***intervalles de prélèvement*** (Pour le SOC par le module électronique) et ***d'envoi*** (Du module électronique vers la plateforme web) sont relativement long (Par exemple de plusieurs jours pour le premier à quelques semaines pour le sécond). C'est le mode qui consomme le moins d'énergie possible pour le module électronique car ce dernier est moins sollicité.
+- **CALIBRATION**: Est le mode pour lequel on commande les paramètres de mesure du module électronique directement via la plateforme web. Ces paramètres de mesure sont les suivants:
+    - `Sampling interval` (En seconds): Intervalle de prélèvement du SOC par le microcontrolleur du module électronique.
+    - `Sending interval` (En heure): Intervalle d'envoi d'informations du microcontrolleur à la plateforme web.
+    - `Total capacity` (Nombre entier): Correspondant à la capacité totale de la batterie en Ampère Heure (AH).
+    - `Pourcentage` (En pourcentage): Force le changement du pourcentage de la batterie du device sélectionné (Compte tenu du glissement que cela pourrait connaître au cours du temps).
+> **NB**: Il est nécessaire de devoir activer le suivi du device au niveau de la plateforme web pour pouvoir recévoir des notifications par mail lorsque le niveau de sa batterie atteint des seuils critiques (***Seuil au rouge***). Pour cela Cfr. [le manuel utilisateur](https://github.com/josamuna/codepo-fontend/blob/main/Manuel%20utilisateur%20Projet%20monitor-engine.pdf) de la plateforme web.
 
 ### Récommendations
 

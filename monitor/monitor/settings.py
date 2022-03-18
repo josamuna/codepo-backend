@@ -25,6 +25,8 @@ SECRET_KEY = 'cu)hv=ra#w-47j67ln)()mf7v$jrwd3ir@9%ts3x-z7jk40$p('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Enabled Django Timezone
+
 # ALLOWED_HOSTS = [
 #     # '192.168.43.246',
 #     'localhost',
@@ -133,13 +135,14 @@ DATABASES = {
     }
 }
 
+CELERY_ENABLE_UTC = True
 CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_TIMEZONE = 'Africa/Nairobi'
+CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'connect_to_mqtt_broker': {
         'task': 'monitor_engine.tasks.connect_to_mqtt_broker',
         #    'schedule': 1800.0,
-        'schedule': 120.0,
+        'schedule': 60.0,
         #    'schedule': crontab(hour=11, minute=29, day_of_week=2)
     },
 
