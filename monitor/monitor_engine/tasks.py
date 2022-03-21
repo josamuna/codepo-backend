@@ -1,10 +1,10 @@
 #   Connection Return Codes
 #   0: Connection successful
-#   1: Connection refused – incorrect protocol version
-#   2: Connection refused – invalid client identifier
-#   3: Connection refused – server unavailable
-#   4: Connection refused – bad username or password
-#   5: Connection refused – not authorised
+#   1: Connection refused: incorrect protocol version
+#   2: Connection refused: invalid client identifier
+#   3: Connection refused: server unavailable
+#   4: Connection refused: bad username or password
+#   5: Connection refused: not authorised
 #   6-255: Currently unused.
 
 from datetime import datetime
@@ -25,19 +25,19 @@ import threading
 # generate client ID with pub prefix randomly
 # client_id = f'python-mqtt-{random.randint(0, 1000)}'
 
-# Clients list for test
-clients = [
-    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-100", "topic":"mytopic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
-    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-200", "topic":"mytopic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
-    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-300", "topic":"mytopic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"}
-]
-
 # Clients list for production
-# clients = [
-#    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:21934b3c-da9e-431d-8b89-8695b3ac77f2", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
-#    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:ec893223-df92-404b-ba96-c7c085cb16f9", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
-#    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:9c58f221-1205-4702-83ba-3408d399c587", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
-# ]
+""" clients = [
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:21934b3c-da9e-431d-8b89-8695b3ac77f2", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:ec893223-df92-404b-ba96-c7c085cb16f9", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:9c58f221-1205-4702-83ba-3408d399c587", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
+] """
+
+# Clients list for test only
+clients = [
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-100", "topic":"my_topic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-200", "topic":"my_topic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-300", "topic":"my_topic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
+]
 
 # Set number of clients
 nbr_clients = len(clients)
@@ -81,12 +81,12 @@ def subscribes(all_clients):
                 saveMeasure(msg_processed)
                 saveNotification(msg_processed) 
                 # This line must be decommented after adding e-mail credentials
-                # sendMail(msg_processed)
+                sendMail(msg_processed)
     i = 0
     for c in all_clients:
         c.subscribe(clients[i]["topic"])
         c.on_message = on_message
-        time.sleep(1)
+        time.sleep(2)
         disconnect(c, i)
         i = i + 1
 
@@ -101,7 +101,7 @@ def connect_mqtt():
             print("Failed to connect client '" +  clients[0]["client_id"] + "', return code " + str(rc))
     mqtt_client.Client.connected_flag = False
     client = mqtt_client.Client(clients[0]["client_id"], clean_session=False)
-    # client.username_pw_set(username, password)
+    client.username_pw_set(username, password)
     client.on_connect = on_connect
     client.loop_start()
     # client.tls_set()
@@ -126,7 +126,7 @@ def subscribe(client):
                 saveMeasure(msg_processed)
                 saveNotification(msg_processed) 
                 # This line must be decommented after adding e-mail credentials
-                # sendMail(msg_processed)
+                sendMail(msg_processed)
 
     client.subscribe(clients[0]["topic"])
     client.on_message = on_message
@@ -152,7 +152,7 @@ def connect_to_mqtt_broker():
     subscribe(client)   """
 
 
-    # Multiples connection
+    # Multiples connections
     print('Attempting to connect...')
     all_clients = connect_mqtts()
     subscribes(all_clients)
@@ -187,6 +187,7 @@ def updateDevice(msg_processed):
                         if int(mode) == 4:
                             my_device.interval_bat_s = None
                             my_device.interval_sending_h = None
+                            # my_device.autonomy = None
                             my_device.autonomy = 0
                         else:
                             my_device.interval_bat_s = str(msg_processed['interval_bat_s']).strip() if msg_processed.get(
@@ -314,7 +315,7 @@ def sendMail(msg_processed):
                 soc = msg_processed.get('soc').strip()
                 autonomy = msg_processed.get('autonomy').strip()
                 subject = "Alerte malette MSF"
-                message = f"The batttimedatectlery level is currently at {soc}%. The estimated time remaining is {autonomy}heure(s)".format(
+                message = f"The battery level is currently at {soc}%. The estimated time remaining is {autonomy}heure(s)".format(
                     soc)
                 email_from = settings.EMAIL_HOST_USER
                 dev = Device.objects.get(caseid=caseid)

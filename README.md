@@ -170,20 +170,21 @@ La structure du projet reprend les dossiers et fichiers suivants détaillés dan
 - `monitor` est le module principal. 
 - `..\monitor\monitor-engine\migrations` répertorie toutes les migrations déjà exécutées dans le projet (Lors de la traduction du modèle vers le Système de Gestion de Base de Données MySQL).
 - `..\monitor\monitor\celery.py` pour la gestion de l'écoute du serveur et le cadensement du scheduler.
-- `..\monitor\monitor\routing.py` rédirige correctement le .........
 - `..\monitor\monitor\settings.py` comprend tous les paramètres de configuration pour la gestion des différentes intéraction entre l'interface utilisateur et les autres parties du système: Assure le bon fonctionnement du Backend.
-- `..\monitor\monitor\urls.py` pour la spécification des URL d'accès.
-- `..\monitor\monitor\asgi.py` .........
-- `..\monitor\monitor-engine\admin.py` .........
+- `..\monitor\monitor\urls.py` pour la spécification des URLs d'accès.
+- `..\monitor\monitor\asgi.py` (**A**synchronous **S**erver **G**ateway **I**nterface): est le remplaçant du fichier wsgi et permet de définir la façon dont le(s) serveur(s) Django communique(ent) avec l'application.
+- `..\monitor\monitor-engine\admin.py` permet l'enregistrement du model de l'application dans la console d'Administration de Django.
 - `..\monitor\monitor-engine\apps.py` spécifie le nom de l'application.
 - `..\monitor\monitor-engine\codepoBackend` spécifie les adresses pour le serveur distant et celui en local.
-- `..\monitor\monitor-engine\consumers.py` .........................
+- `..\monitor\monitor-engine\consumers.py`.
 - `..\monitor\monitor-engine\models.py` reprend le modèle (de la partie Modèle du MVC) qui servira au reverse engineering pour la création de la Base de Données en mode commande.
-- `..\monitor\monitor-engine\routing.py` ..................................
-- `..\monitor\monitor-engine\serializers.py` ..............................
-- `..\monitor\monitor-engine\tasks.py` ..............................
-- `..\monitor\monitor-engine\urls.py` ..............................
-- `..\monitor\monitor-engine\views.py` ..............................
+- `..\monitor\monitor-engine\routing.py`.
+- `..\monitor\monitor-engine\serializers.py`.
+- `..\monitor\monitor-engine\tasks.py` est le fichier contenant les actions devant être exécutées de façon automatisée par **celery**.
+- `..\monitor\monitor-engine\urls.py` permet de faire la correspondance (Ou le lien) entre les URLs des requêtes de l'utilisateur avec leurs pages correspondantes.
+- `..\monitor\monitor-engine\views.py` permet d'avoir une interface d'interaction pour l'utilisateur avec l'application. Il contients les views ou vues sous forme des classes.
+
+We use the concept of Serializers in Django Rest_Framework for making different types of views. Some of these are CustomFilter Views, Class-Based List Views, and Detail Views.
 - `..\monitor\rptree\` contient les fichiers nécessaire pour générer le fichier `markdown-file-tree.md` en mode commande en utilisant le fichier `..\monitor\tree.py`.
 - `..\monitor\manage.py` fichier principal pour l'exécution des taches en mode administrateur (Comme l'installation d'un pacquet, l'exécution de l'application, etc.).
 
@@ -403,37 +404,28 @@ La structure du projet reprend les dossiers et fichiers suivants détaillés dan
 
 - `codepo-frontend` est le répertoire principal du projet. 
 - `..\public\favicon.ico` est le fichier correspondant à l'icône de l'application.
-- `..\src` ...........................
-- `..\src\assets` ...........................
-- `..\src\components` ...........................
-- `..\src\icons` ...........................
-- `..\src\image` ...........................
-- `..\src\layouts` ...........................
-- `..\src\layouts\DashboardLayout` ...........................
-- `..\src\layouts\NavBar` ...........................
-- `..\src\layouts\Profile` ...........................
-- `..\src\layouts\MainLayout` ...........................
-- `..\src\theme` ...........................
-- `..\src\utils` ...........................
-- `..\src\views` ...........................
-- `..\src\views\Login` ...........................
-- `..\src\views\Redux` ...........................
-- `..\src\views\User` ...........................
-- `..\src\views\commande` ...........................
-- `..\src\views\corbeille` ...........................
-- `..\src\views\corbeille\CorbeilleView` ...........................
-- `..\src\views\devices` ...........................
-- `..\src\views\corbeille\DeviceListView` ...........................
-- `..\src\views\errors` ...........................
-- `..\src\views\maps` ...........................
-- `..\src\views\corbeille\MapView` ...........................
-- `..\src\views\reports` ...........................
-- `..\src\views\corbeille\DaschboardView` ...........................
-- `..\src\views\search` ...........................
-- `..\src\views\corbeille\SearchDeviceListView` ...........................
-- `..\src\views\services` ...........................
-- `..\src\views\settings` ...........................
-- `..\src\views\settings\SettingsView` ...........................
+- `..\public\package.json` est l'un des fichiers le plus important qui permet de gérer les dépendances du projets ainsi que d'autres informations utiles (Comme le nom du projet, sa version, etc.), ainsi il garde la trace de tous ce qui est installé dans le projet.
+- `..\src` est le répertoire contenant les fichiers sources de l'application React où l'on peut créer d'autres sous-répertoire à volonté. Ce répertoire est automatiquement créé par le Webpack. De cette façon un certain nombre des sous-répertoires et automatiquement générés pour bien organisé le projet (Pages web, images, bannières, etc.).
+- `..\src\assets` contient certaines images des pages web.
+- `..\src\components` contient les composants de l'application.
+- `..\src\icons` contient un certain nombre d'icônes de l'application.
+- `..\src\image` contient les images de l'applications.
+- `..\src\layouts` contient les différentes bannières de l'application.
+- `..\src\theme` contient les différents themes de l'application.
+- `..\src\utils` permet la gestion des fonctions utilitaires pour le projet.
+- `..\src\views` contients les différentes vues (d'un à plusieurs fichiers JavaScript) de l'application.
+- `..\src\views\Login` permet la gestion du login de l'utilisateur.
+- `..\src\views\Redux` permet la gestion des paramètres Redux.
+- `..\src\views\User` permet la gestion des utilisateurs.
+- `..\src\views\commande` permet la gestion des commandes à envoyé au devices / et ou des devices eux-même.
+- `..\src\views\corbeille` permet la gestion de la corbeille après suppression.
+- `..\src\views\devices` permet la gestion des devices.
+- `..\src\views\errors` permet la gestion des erreurs (Comme 404 ou Page not found).
+- `..\src\views\maps` permet la gestion de tout ce qui est lié à l'affichage de la Map.
+- `..\src\views\reports` permet la gestion des information de summarsation (Summarizing).
+- `..\src\views\search` permet la gestion de la recherche pour l'application.
+- `..\src\views\services` permet la gestion de certains paramètres de fonctionnement de l'application (Comme la configuration des sockets, etc.).
+- `..\src\views\settings` permet la gestion des paramétrages de l'application (Comme les préférences de couleurs, les notifications, etc.).
 
 Pour arriver à générer le fichier relatif à l'arborescence des dossiers et fichiers `markdown-file-tree.md` ([Voir dans ce repository](https://github.com/michalbe/md-file-tree)), procéder comme suit:
 
@@ -463,16 +455,86 @@ Pour arriver à générer le fichier relatif à l'arborescence des dossiers et f
 
 Pour arriver à effectuer un **build** du projet, un certain nombre des dépendances est requis (Néanmoins avec un IDE telque [PyCharm](https://www.jetbrains.com/fr-fr/pycharm/) l'installation de ces dernières devient plus au moins aisée.) suivant cet ordre:
 
-- `python` (v3.9) ou ultérieure: Doit être installé pour la prise en charge du projet.
-- `django` (v3.2.11) ou ultérieure: Doit être installé pour la prise en charge du projet.
-- `pip` (v21.1.2) ou ultérieure: ***P***ip ***I***nstalls ***P***ython, un gestionnaire de paquets utilisé pour installer et gérer des paquets écrits en Python.
-- `djangorestframework`	(v3.13.1).
-- `django-cors-headers`	(v3.11.0).
-- `mysqlclient` (v2.1.0): Pour la prise en charge de la création de la Base de Données MySQL par l'intermédiaire du model.
-- `channels` (v3.0.4).
-- `paho-mqtt` (v1.6.1): Prise en charge du client MQTT.
-- `djangorestframework-simplejwt` (v5.0.0).
+- `python` (v3.8.3): Doit être installé pour la prise en charge du projet.
+- `pip` (version par defaut): ***P***ip ***I***nstalls ***P***ython, un gestionnaire de paquets utilisé pour installer et gérer des paquets écrits en Python.
 
+    ```
+    sudo apt-get install python3-pip
+    ```
+    
+    Si nécessaire, **pip** peut être mis à jour par la commande:
+    
+    ```
+    python3 -m pip install --upgrade pip setuptools wheel
+    ```
+    
+- `django` (v3.2.12): Doit être installé pour la prise en charge du projet.
+
+    ```
+    pip3 install -Iv django==3.2.12
+    ```
+    
+- `celery` (v4.4.2): Doit être installé pour la prise en charge du scheduler et des tasks devant être executées périodiquement (Réception des messages des modules électroniques).
+    
+    ```
+    pip3 install -Iv celery==4.4.2
+    ```
+    
+- `channels` (version par défaut).
+    
+    ```
+    pip3 install channels
+    ```
+    
+- `django-cors-headers`	(version par défaut).
+    
+    ```
+    pip3 install django-cors-headers
+    ```
+    
+- `django-rest-framework` (version par défaut).*
+   
+    ```
+    pip3 install djangorestframework
+    ```
+    
+- `django-celery-beat` (v2.2.0).
+   
+    ```
+    pip3 install -Iv django-celery-beat==2.2.0
+    ```
+    
+- `mysqlclient` (v2.1.0): Pour la prise en charge de la création de la Base de Données MySQL par l'intermédiaire du model.
+   
+    ```
+    sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
+    pip3 install mysqlclient
+    ```
+    
+- `djangorestframework-simplejwt` (version par défaut).
+    
+    ```
+    pip3 install djangorestframework-simplejwt
+    ```
+    
+- `paho-mqtt` (version par défaut): Prise en charge du client MQTT.
+   
+    ```
+    pip3 install paho-mqtt
+    ```
+    
+- `redis` (version par défaut): Le serveur Redis permet de gérer les commandes celery (**worker** et **beat**). 
+    
+    ```
+    pip3 install redis
+    ```
+    
+    En mode developpement, le Serveur Redis est aussi important, mais pa nécessaire en mode production.
+    
+    ```
+    sudo apt install python-celery-common
+    ```
+    
 Certains autres paquets sous-jacents sont installées automatiquement, et rien d'autre n'est requis pour cela.
 
 >***Les dépendances du Frontend sont totatement gérées par l'utilitaire `npm` qui se charge d'installer tout ce qui est nécessaire pour le projet, voir corriger des failles de sécurité et autres***.
@@ -653,7 +715,7 @@ Pour un bon fonctionnement du système, ***quatre modes*** de fonctionnement ont
 - **CALIBRATION**: Est le mode pour lequel on commande les paramètres de mesure du module électronique directement via la plateforme web. Ces paramètres de mesure sont les suivants:
     - `Sampling interval` (En seconds): Intervalle de prélèvement du SOC par le microcontrolleur du module électronique.
     - `Sending interval` (En heure): Intervalle d'envoi d'informations du microcontrolleur à la plateforme web.
-    - `Total capacity` (Nombre entier): Correspondant à la capacité totale de la batterie en Ampère Heure (AH).
+    - `Total capacity` (Nombre entier): Correspondant à la capacité totale de la batterie en Ampères-Heure (AH).
     - `Pourcentage` (En pourcentage): Force le changement du pourcentage de la batterie du device sélectionné (Compte tenu du glissement que cela pourrait connaître au cours du temps).
 > **NB**: Il est nécessaire de devoir activer le suivi du device au niveau de la plateforme web pour pouvoir recévoir des notifications par mail lorsque le niveau de sa batterie atteint des seuils critiques (***Seuil au rouge***). Pour cela Cfr. [le manuel utilisateur](https://github.com/josamuna/codepo-fontend/blob/main/Manuel%20utilisateur%20Projet%20monitor-engine.pdf) de la plateforme web.
 
