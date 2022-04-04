@@ -142,7 +142,7 @@ CELERY_BEAT_SCHEDULE = {
     'connect_to_mqtt_broker': {
         'task': 'monitor_engine.tasks.connect_to_mqtt_broker',
         #    'schedule': 1800.0,
-        'schedule': 80.0,
+        'schedule': 60.0,
         #    'schedule': crontab(hour=11, minute=29, day_of_week=2)
     },
 

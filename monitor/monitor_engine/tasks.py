@@ -26,18 +26,18 @@ import threading
 # client_id = f'python-mqtt-{random.randint(0, 1000)}'
 
 # Clients list for production
-""" clients = [
-    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:21934b3c-da9e-431d-8b89-8695b3ac77f2", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
-    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:ec893223-df92-404b-ba96-c7c085cb16f9", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
-    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:9c58f221-1205-4702-83ba-3408d399c587", "topic":"DtW", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
-] """
+clients = [
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:21934b3c-da9e-431d-8b89-8695b3ac77f2", "topic":"FICT8C79", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:ec893223-df92-404b-ba96-c7c085cb16f9", "topic":"FICT8C80", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
+    {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:9c58f221-1205-4702-83ba-3408d399c587", "topic":"FICT8C81", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
+] 
 
 # Clients list for test only
-clients = [
-    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-100", "topic":"my_topic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
-    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-200", "topic":"my_topic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
+""" clients = [
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"device:21934b3c-da9e-431d-8b89-8695b3ac77f2", "topic":"FICT8C79", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
+    {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-200", "topic":"FICT8C80", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
     {"broker":"broker.emqx.io", "port":1883, "client_id":"python-mqtt-300", "topic":"my_topic", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
-]
+] """
 
 # Set number of clients
 nbr_clients = len(clients)
@@ -55,7 +55,7 @@ def connect_mqtts():
     for c in clients:
         mqtt_client.Client.connected_flag = False
         client = mqtt_client.Client(c["client_id"], clean_session=False)
-        # client.username_pw_set(c["username"], c["password"])
+        client.username_pw_set(c["username"], c["password"])
         client.on_connect = on_connect
         client.loop_start()
         client.connect(c["broker"], c["port"])
@@ -73,15 +73,12 @@ def connect_mqtts():
 def subscribes(all_clients):
     def on_message(client, userdata, msg):
         print(str(msg.payload))
-        msg_processed = process_msg(str(msg.payload))
+        msg_processed = __process_msg(str(msg.payload))
         print(msg_processed)
         if len(msg_processed) > 5:
             result = updateDevice(msg_processed)
             if result:
                 saveMeasure(msg_processed)
-                saveNotification(msg_processed) 
-                # This line must be decommented after adding e-mail credentials
-                sendMail(msg_processed)
     i = 0
     for c in all_clients:
         c.subscribe(clients[i]["topic"])
@@ -101,7 +98,7 @@ def connect_mqtt():
             print("Failed to connect client '" +  clients[0]["client_id"] + "', return code " + str(rc))
     mqtt_client.Client.connected_flag = False
     client = mqtt_client.Client(clients[0]["client_id"], clean_session=False)
-    client.username_pw_set(username, password)
+    client.username_pw_set(clients[0]["username"], clients[0]["password"])
     client.on_connect = on_connect
     client.loop_start()
     # client.tls_set()
@@ -117,18 +114,20 @@ def connect_mqtt():
 # Subscribe one client to topic
 def subscribe(client):
     def on_message(client, userdata, msg):
-        print(str(msg.payload))
-        msg_processed = process_msg(str(msg.payload))
-        print(msg_processed)
-        if len(msg_processed) > 5:
-            result = updateDevice(msg_processed)
-            if result:
-                saveMeasure(msg_processed)
-                saveNotification(msg_processed) 
-                # This line must be decommented after adding e-mail credentials
-                sendMail(msg_processed)
+        current_topic = msg.topic
+        msg_processed = __process_msg(str(msg.payload))  
+        
+        if(current_topic == clients[0]["topic"] or current_topic == clients[1]["topic"] or current_topic == clients[2]["topic"]):
+            print("\n=>Message = " + str(msg_processed) + "\n=>Topic = " + msg.topic)
+            if len(msg_processed) > 5:
+                result = updateDevice(msg_processed)
+                if result:
+                    saveMeasure(msg_processed)
+        else:
+            print("Bad topic provided!!")
+            # raise Exception("Bad topic provided!!") 
 
-    client.subscribe(clients[0]["topic"])
+    client.subscribe([(clients[0]["topic"] , 1), (clients[1]["topic"], 1)])
     client.on_message = on_message
     time.sleep(1)
     disconnect(client, 0)
@@ -147,17 +146,18 @@ def disconnect(client, num_client):
 # We can have either registered task | Start task
 @shared_task
 def connect_to_mqtt_broker():
-    """ print('Attempting to connect...')
-    client = connect_mqtt()
-    subscribe(client)   """
+    try:
+        print('Attempting to connect...')
+        client = connect_mqtt()
+        subscribe(client)
 
-
-    # Multiples connections
-    print('Attempting to connect...')
-    all_clients = connect_mqtts()
-    subscribes(all_clients)
-
-
+        # Multiples connections
+        """ print('Attempting to connect...')
+        all_clients = connect_mqtts()
+        subscribes(all_clients) """
+    except Exception as e:
+        print("Error occurs while processing task " + str(e))
+ 
 # @shared_task 
 @shared_task
 def send_notification():
@@ -199,6 +199,7 @@ def updateDevice(msg_processed):
                                 "autonomy") is not None else my_device.interval_sending_h
 
                         my_device.save()
+
                         print('Device properties updated')
                         return True
     except Exception as exc:
@@ -211,7 +212,7 @@ def saveMeasure(msg_processed):
         longitude = msg_processed.get('longitude')
         latitude = msg_processed.get('latitude')
         soc = msg_processed.get("soc")
-        # autonomy = msg_processed.get("soc")
+        autonomy = msg_processed.get("autonomy")
         caseid = str(msg_processed['caseid']).strip() if msg_processed.get("caseid") is not None else 0
         if msg_processed.get("caseid") is not None and msg_processed.get("soc") is not None:
             my_device = Device.objects.get(caseid=caseid)
@@ -240,13 +241,25 @@ def saveMeasure(msg_processed):
                 if measured_serializer.is_valid():
                     measured_serializer.save()
                     print('Measured saved successfully')
+
+                    # Save Notifications
+                    try:
+                        __saveNotification(caseid, autonomy, soc)
+                    except Exception as exc:
+                        print(f"Error save notification : {exc}")
+
+                    # When values are valid we try to send an email   
+                    try: 
+                        __sendMail(caseid, autonomy, soc)
+                    except Exception as exc:
+                        print(f"Error while sending mail : {exc}")
                 else:
                     print(measured_serializer.errors)
     except Exception as exc:
         print(f"Error occured when trying to save measure : {exc}")
 
 
-def process_msg(msg):
+def __process_msg(msg):
     new_msg = msg.replace('{', '')
     new_msg = new_msg.replace('}', '')
     new_msg = new_msg.split(',')
@@ -280,53 +293,60 @@ def process_msg(msg):
     return data
 
 
-def saveNotification(msg_processed):
-    try:
-        if msg_processed.get('soc') is not None and len(msg_processed.get('soc')) > 1:
-            if float(msg_processed.get('soc').strip()) <= 50:
-                caseid = msg_processed.get('caseid')
-                soc = msg_processed.get('soc').strip()
-                autonomy = msg_processed.get('autonomy').strip()
-                notification = f"The battery level is currently at {soc}%. The estimated time remaining is {autonomy}"
-                dev = Device.objects.get(caseid=caseid)
-                if dev:
-                    dev_track = DeviceTracking.objects.filter(device_id=dev.id).values('user_id').distinct()
-                    for d in dev_track:
-                        user = User.objects.get(pk=d['user_id'])
-                        notif = Notification(
-                            notification=notification,
-                            time=timezone.now(),
-                            device_id=dev,
-                            user_id=user,
-                            status=False,
-                            caseid=caseid
-                        )
-                        notif.save()
-        print("Notifications saved successfully")
-    except Exception as exc:
-        print(f"Error save notification : {exc}")
+def __saveNotification(caseid, autonomy, soc):
+    if(float(soc) <= 50):
+        data = __setNotificationParams(soc, autonomy)
+        notification = data['notification_message']
+        dev = Device.objects.get(caseid=caseid)
+        if dev:
+            dev_track = DeviceTracking.objects.filter(device_id=dev.id).values('user_id').distinct()
+            for d in dev_track:
+                user = User.objects.get(pk=d['user_id'])
+                notif = Notification(
+                    notification=notification,
+                    time=timezone.now(),
+                    device_id=dev,
+                    user_id=user,
+                    status=False,
+                    caseid=caseid
+                )
+                notif.save()
+            print("Notifications saved successfully")
 
 
-def sendMail(msg_processed):
-    try:
-        if msg_processed.get('soc') is not None and len(msg_processed.get('soc')) > 1:
-            if float(msg_processed.get('soc').strip()) <= 50:
-                caseid = msg_processed.get('caseid').strip()
-                soc = msg_processed.get('soc').strip()
-                autonomy = msg_processed.get('autonomy').strip()
-                subject = "Alerte malette MSF"
-                message = f"The battery level is currently at {soc}%. The estimated time remaining is {autonomy}heure(s)".format(
-                    soc)
-                email_from = settings.EMAIL_HOST_USER
-                dev = Device.objects.get(caseid=caseid)
-                email_list = []
-                if dev:
-                    dev_track = DeviceTracking.objects.filter(device_id=dev.id).values('user_id').distinct()
-                    for d in dev_track:
-                        user = User.objects.get(pk=d['user_id'])
-                        email_list.append(user.email)
-                if email_list:
-                    send_mail(subject, message, email_from, email_list)
-                    print("Mails sent successfully")
-    except Exception as exc:
-        print(f"Error send mail : {exc}")
+# Specify email content message and subject
+def __setEmailMessageParams(soc, autonomy):
+    data  = {}
+    data['email_message'] = "Alerte malette MSF"
+    data['subject_email'] = f"The battery level is currently at {soc}%. The estimated time remaining is {autonomy}heure(s)".format(
+        soc)
+    return data
+
+
+# Specify notification content message
+def __setNotificationParams(soc, autonomy):
+    data  = {}
+    data['notification_message'] = f"The battery level is currently at {soc}%. The estimated time remaining is {autonomy}"
+    return data
+
+
+# The mail has sent only if the SOC level is less than or egal 50 or soc <= 50
+def __sendMail(caseid, autonomy, soc):
+    email_from = settings.EMAIL_HOST_USER
+    data = {}
+    if(float(soc) <= 50):
+        if (email_from != 'EMAIL_HOST_USER' or email_from != None):
+            data = __setEmailMessageParams(soc, autonomy)
+            
+            dev = Device.objects.get(caseid=caseid)
+            email_list = []
+            if dev:
+                dev_track = DeviceTracking.objects.filter(device_id=dev.id).values('user_id').distinct()
+                for d in dev_track:
+                    user = User.objects.get(pk=d['user_id'])
+                    email_list.append(user.email)
+            if email_list:
+                subject_email = data['subject_email']
+                email_message = data['email_message']
+                send_mail(subject_email, email_message, email_from, email_list)
+                print("Mails sent successfully")       
