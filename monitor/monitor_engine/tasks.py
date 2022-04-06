@@ -295,7 +295,7 @@ def __process_msg(msg):
 
 def __saveNotification(caseid, autonomy, soc):
     if(float(soc) <= 50):
-        data = __setNotificationParams(soc, autonomy)
+        data = __setNotificationParams(caseid, autonomy, soc)
         notification = data['notification_message']
         dev = Device.objects.get(caseid=caseid)
         if dev:
@@ -315,18 +315,18 @@ def __saveNotification(caseid, autonomy, soc):
 
 
 # Specify email content message and subject
-def __setEmailMessageParams(soc, autonomy):
+def __setEmailMessageParams(caseid, autonomy, soc):
     data  = {}
-    data['email_message'] = "Alerte malette MSF"
-    data['subject_email'] = f"The battery level is currently at {soc}%. The estimated time remaining is {autonomy}heure(s)".format(
+    data['subject_email'] = "#" + caseid + "# Alerte malette MSF"
+    data['email_message'] = f"Device ID: {caseid} has currently battery level of {soc}%. It battery estimated time remaining is {autonomy}hour(s)".format(
         soc)
     return data
 
 
 # Specify notification content message
-def __setNotificationParams(soc, autonomy):
+def __setNotificationParams(caseid, autonomy, soc):
     data  = {}
-    data['notification_message'] = f"The battery level is currently at {soc}%. The estimated time remaining is {autonomy}"
+    data['notification_message'] = f"Device ID: {caseid} has currently battery level of {soc}%. It battery estimated time remaining is {autonomy}hour(s)"
     return data
 
 
@@ -336,7 +336,7 @@ def __sendMail(caseid, autonomy, soc):
     data = {}
     if(float(soc) <= 50):
         if (email_from != 'EMAIL_HOST_USER' or email_from != None):
-            data = __setEmailMessageParams(soc, autonomy)
+            data = __setEmailMessageParams(caseid, autonomy, soc)
             
             dev = Device.objects.get(caseid=caseid)
             email_list = []
