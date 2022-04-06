@@ -719,6 +719,8 @@ Pour un bon fonctionnement du système, ***quatre modes*** de fonctionnement ont
     - `Pourcentage` (En pourcentage): Force le changement du pourcentage de la batterie du device sélectionné (Compte tenu du glissement que cela pourrait connaître au cours du temps).
 > **NB**: Il est nécessaire de devoir activer le suivi du device au niveau de la plateforme web pour pouvoir recévoir des notifications par mail lorsque le niveau de sa batterie atteint des seuils critiques (***Seuil au rouge***). Pour cela Cfr. [le manuel utilisateur](https://github.com/josamuna/codepo-fontend/blob/main/Manuel%20utilisateur%20Projet%20monitor-engine.pdf) de la plateforme web.
 
+> Pour une bonne gestion de la ***publication*** et de la ***réception*** des messages, il a été prevu que ***le nom de chaque Topic corresponde à celui de l'identifiant du device***, et ainsi avoir un topic par device. Ceci facilite ainsi le suivis des messages reçu et de l'associer correctement au divice concerné (Cfr. le fichier [tasks.py](https://github.com/josamuna/codepo-backend/blob/main/monitor/monitor_engine/tasks.py) de ce repository).
+
 ### Récommendations
 
 ***
