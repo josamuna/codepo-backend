@@ -22,6 +22,9 @@ from .serializers import MeasuredSerializer
 import time
 import threading
 
+
+import constants # some constants to avoid litteral strings, etc.
+
 # generate client ID with pub prefix randomly
 # client_id = f'python-mqtt-{random.randint(0, 1000)}'
 
@@ -76,7 +79,7 @@ def subscribes(all_clients):
         msg_processed = __process_msg(str(msg.payload))
         print(msg_processed)
         if len(msg_processed) > 5:
-            result = updateDevice(msg_processed)
+            result = saveDevice(msg_processed)
             if result:
                 saveMeasure(msg_processed)
     i = 0
@@ -120,7 +123,7 @@ def subscribe(client):
         if(current_topic == clients[0]["topic"] or current_topic == clients[1]["topic"] or current_topic == clients[2]["topic"]):
             print("\n=>Message = " + str(msg_processed) + "\n=>Topic = " + msg.topic)
             if len(msg_processed) > 5:
-                result = updateDevice(msg_processed)
+                result = saveDevice(msg_processed)
                 if result:
                     saveMeasure(msg_processed)
         else:
@@ -165,96 +168,68 @@ def send_notification():
     # Another trick
 
 
-def updateDevice(msg_processed):
+def saveDevice(msg_processed):
     try:
-        caseid = str(msg_processed['caseid']).strip() if msg_processed.get("caseid") is not None else 0
-        if msg_processed.get("caseid") is not None and msg_processed.get("mode") is not None:
-            my_device = Device.objects.get(caseid=caseid)
-            mode = str(msg_processed['mode']).strip()
-            if len(mode) >= 1:
-                is_numeric = str(mode).isnumeric()
-                if is_numeric:
-                    is_valid_interval = int(mode) < 5
-                    if my_device and is_valid_interval:
-                        battery_mode = {
-                            1: 'BAT_GPS',
-                            2: 'BAT',
-                            3: 'ECONOMY',
-                            4: 'CALIBRATION'
-                        }
-                        my_device.mode = battery_mode[int(mode)]
+        caseid = msg_processed['caseid']       
+        mode = int(msg_processed['mode'])
+        my_device = Device.objects.get(caseid=caseid)
+        my_device.mode = __getModeFromIntValue(mode)
 
-                        if int(mode) == 4:
-                            my_device.interval_bat_s = None
-                            my_device.interval_sending_h = None
-                            # my_device.autonomy = None
-                            my_device.autonomy = 0
-                        else:
-                            my_device.interval_bat_s = str(msg_processed['interval_bat_s']).strip() if msg_processed.get(
-                                "interval_bat_s") is not None else my_device.interval_bat_s
-                            my_device.interval_sending_h = str(
-                                msg_processed['interval_sending_h']).strip() if msg_processed.get(
-                                "interval_sending_h") is not None else my_device.interval_sending_h
-                            my_device.autonomy = str(msg_processed['autonomy']).strip() if msg_processed.get(
-                                "autonomy") is not None else my_device.interval_sending_h
+        if int(mode) == 4:
+            my_device.interval_bat_s = None
+            my_device.interval_sending_h = None
+            # my_device.autonomy = None
+            my_device.autonomy = 0
+        else:
+            my_device.interval_bat_s = msg_processed['interval_bat_s']
+            my_device.interval_sending_h = msg_processed['interval_sending_h']
+            my_device.autonomy = msg_processed['autonomy']
 
-                        my_device.save()
+        my_device.save()
 
-                        print('Device properties updated')
-                        return True
-    except Exception as exc:
-        print(f"Error occured when trying to update device properties : {exc}")
+        print('Device properties updated')
+        return True
+    except Exception as e:
+        print(f"Error occured when trying to update device properties : {e}")
         return False
 
 
 def saveMeasure(msg_processed):
     try:
+        caseid = msg_processed['caseid']
         longitude = msg_processed.get('longitude')
         latitude = msg_processed.get('latitude')
-        soc = msg_processed.get("soc")
+        soc = int(msg_processed.get("soc"))
         autonomy = msg_processed.get("autonomy")
-        caseid = str(msg_processed['caseid']).strip() if msg_processed.get("caseid") is not None else 0
-        if msg_processed.get("caseid") is not None and msg_processed.get("soc") is not None:
-            my_device = Device.objects.get(caseid=caseid)
-            soc = str(msg_processed.get("soc")).strip()
-            is_not_none = msg_processed.get('latitude') is not None and msg_processed.get('longitude') is not None
-            is_invalid_length = len(msg_processed.get('latitude')) < 2 and len(msg_processed.get('longitude')) < 2
-            is_na_n = str(msg_processed.get('latitude')).strip().lower() == 'nan' or str(
-                msg_processed.get('longitude')).strip().lower()
-            if soc.isnumeric():
-                if is_not_none or is_invalid_length or is_na_n:
-                    measure = Measured.objects.filter(device_id=my_device).order_by('-id')[:1]
-                    if measure:
-                        for m in measure:
-                            longitude = m.longitude
-                            latitude = m.latitude
+        
+        my_device = Device.objects.get(caseid=caseid)
 
-                measured_data = {
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    'soc': soc,
-                    'time': datetime.now(),
-                    'device_id': my_device.id,
-                }
+        measured_data = {
+            'latitude': latitude,
+            'longitude': longitude,
+            'soc': soc,
+            'time': datetime.now(),
+            'device_id': my_device.id,
+        }
 
-                measured_serializer = MeasuredSerializer(data=measured_data)
-                if measured_serializer.is_valid():
-                    measured_serializer.save()
-                    print('Measured saved successfully')
+        measured_serializer = MeasuredSerializer(data=measured_data)
+        if measured_serializer.is_valid():
+            measured_serializer.save()
+            print('Measured saved successfully')
 
-                    # Save Notifications
-                    try:
-                        __saveNotification(caseid, autonomy, soc)
-                    except Exception as exc:
-                        print(f"Error save notification : {exc}")
+            # Save Notifications
+            try:
+                __saveNotification(caseid, autonomy, soc)
+            except Exception as exc:
+                print(f"Error save notification : {exc}")
 
-                    # When values are valid we try to send an email   
-                    try: 
-                        __sendMail(caseid, autonomy, soc)
-                    except Exception as exc:
-                        print(f"Error while sending mail : {exc}")
-                else:
-                    print(measured_serializer.errors)
+            # When values are valid we try to send an email   
+            try: 
+                __sendMail(caseid, autonomy, soc)
+            except Exception as exc:
+                print(f"Error while sending mail : {exc}")
+        else:
+            print("Failed to save measure, " + measured_serializer.errors)
     except Exception as exc:
         print(f"Error occured when trying to save measure : {exc}")
 
@@ -274,8 +249,12 @@ def __process_msg(msg):
                     data['soc'] = str(new_val[1]).strip()
                 elif 'latitude' in str(new_val[0]).lower():
                     data['latitude'] = str(new_val[1]).strip()
+                    if(len(data['latitude']) <= 2):
+                        raise Exception("Invalid latitude value with a much less value")
                 elif 'longitude' in str(new_val[0]).lower():
                     data['longitude'] = str(new_val[1]).strip()
+                    if(len(data['longitude']) <= 2):
+                        raise Exception("Invalid longitude value with a much less value")
                 elif 'mode' in str(new_val[0]).lower():
                     data['mode'] = str(new_val[1]).strip()
                 elif 'interval_bat_s' in str(new_val[0]).lower():
@@ -291,6 +270,19 @@ def __process_msg(msg):
     except Exception as exc:
         print("Error occurred. Format message is not valid")
     return data
+
+
+def __getModeFromIntValue(mode):
+    if(mode == 1):
+        return constants.BAT_GPS_MODE
+    elif(mode == 2):
+        return constants.BAT_MODE
+    elif(mode == 3):
+        return constants.ECONOMY_MODE
+    elif(mode == 4):
+        return constants.CALIBRATION_MODE
+    else:
+        return constants.BAT_MODE
 
 
 def __saveNotification(caseid, autonomy, soc):
