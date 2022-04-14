@@ -8,7 +8,6 @@ class Device(models.Model):
     interval_bat_s = models.FloatField(db_column="interval_bat_s", null=True)
     interval_sending_h = models.FloatField(db_column="interval_sending_h", null=True)
     total_capacity = models.IntegerField(db_column='total_capacity', null=True, default=0)
-    autonomy = models.CharField(db_column="autonomy", max_length=100, default="0")
     deleted = models.BooleanField(db_column="deleted", default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.IntegerField(db_column='created_by', default=0)
@@ -25,23 +24,17 @@ class Device(models.Model):
 
 
 class Measured(models.Model):
-    latitude = models.FloatField(db_column="latitude")
-    longitude = models.FloatField(db_column="longitude")
-    # source = models.CharField(max_length=255, db_column="source")
-    soc = models.FloatField(db_column="soc")
+    latitude = models.FloatField(db_column="latitude", null=True)
+    longitude = models.FloatField(db_column="longitude", null=True)
+    energy_in = models.FloatField(db_column="energy_in", null=True)
+    energy_out = models.FloatField(db_column="energy_out", null=True)
+    temperature = models.FloatField(db_column="temperature", null=True)
     time = models.DateTimeField(db_column="time", auto_now=True)
     device_id = models.ForeignKey(Device, on_delete=models.CASCADE, db_column="device_id", related_name='measureds')
 
     class Meta:
         db_table = 'tb_measured'
 
-
-# class DeviceMeasures(models.Model):
-#     device_id = models.ForeignKey(Device, on_delete = models.CASCADE)
-#     measures_id = models.ForeignKey(Measured, on_delete = models.CASCADE)
-
-#     class Meta:
-#         db_table = 'tb_device_measures'
 
 class Command(models.Model):
     command = models.CharField(max_length=255, db_column='command')
@@ -100,22 +93,3 @@ class Notification(models.Model):
 
     class Meta:
         db_table = 'tb_notification'
-
-# class Mode(models.Model):
-#     designation
-
-# class Role(models.Model):
-#     designation = models.CharField(max_length=200, db_column="designation")
-
-#     class Meta:
-#         db_table = 'tb_role'
-
-#     def __str__(self):
-#         return self.designation
-
-# class UserRole(models.Model):
-#     user_id = models.ForeignKey(User, on_delete = models.CASCADE)
-#     role_id = models.ForeignKey(Role, on_delete = models.CASCADE)
-
-#     class Meta:
-#         db_table = 'tb_user_role'

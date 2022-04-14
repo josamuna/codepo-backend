@@ -10,15 +10,6 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = Device
         fields = '__all__'
 
-    # def create(self, validated_data):
-    #     device = Device(
-    #         designation = validated_data['designation'],
-    #         external_id = validated_data['external_id'],
-    #         identity =  validated_data['identity']
-    #     )
-    #     device.save()
-    #     return device
-
 
 class CommandSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,7 +63,7 @@ class HistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        fields = ['id', 'caseid', 'mode', 'autonomy', 'deleted', 'measureds']
+        fields = ['id', 'caseid', 'mode', 'deleted', 'measureds']
 
 
 class DeviceTrackingSerializer(serializers.ModelSerializer):

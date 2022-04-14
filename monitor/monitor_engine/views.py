@@ -675,32 +675,6 @@ def connect_mqtt():
     return client
 
 
-# def subscribe(client: mqtt_client):
-#     def on_message(client, userdata, msg):
-#         payloads = json.loads(msg.payload)
-#         print(payloads)
-#         data = {
-#             'location_latitude': payloads['lat'],
-#             'location_longitude': payloads['long'],
-#             'source': payloads['source'],
-#             'tension': payloads['bat'],
-#             'time': payloads['time'],
-#             'device_id': payloads['device']
-#         }
-#         measuredSerializer = MeasuredSerializer(data=data)
-#         if measuredSerializer.is_valid():
-#             measuredSerializer.save()
-#         # mqtt = MqttConsumer()
-#         # mqtt.send_message(data)
-#     print('===== Inside subscribe =====')
-#     client.subscribe(topic)
-#     client.on_message = on_message
-
-# def init_mqtt_listen():
-#     client = connect_mqtt()
-#     subscribe(client)
-#     client.loop_start()
-
 @api_view(['POST'])
 def sendMail(request):
     status = {'status': False}

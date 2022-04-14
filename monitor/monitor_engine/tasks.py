@@ -33,7 +33,7 @@ clients = [
     {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:21934b3c-da9e-431d-8b89-8695b3ac77f2", "topic":"FICT8C79", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"eLK678pvgtOttN2xxv+bIEKsl/jOXzd/8ubM+G6l"},
     {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:ec893223-df92-404b-ba96-c7c085cb16f9", "topic":"FICT8C80", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"f3Fu7pLG1ZKr1/9lAZl5W7xTX3Vlfb4IziWkcbTk"},
     {"broker":"mqtt.thingstream.io", "port":1883, "client_id":"device:9c58f221-1205-4702-83ba-3408d399c587", "topic":"FICT8C81", "username":"QLOSFKZU5WFI2F9Z1XHR", "password":"1OVjWz37pOOGNgx5tbhHSxGyi/8YS+arppi5zZLi"}
-] 
+]
 
 # Clients list for test only
 """ clients = [
@@ -122,10 +122,10 @@ def subscribe(client):
         
         if(current_topic == clients[0]["topic"] or current_topic == clients[1]["topic"] or current_topic == clients[2]["topic"]):
             print("\n=>Message = " + str(msg_processed) + "\n=>Topic = " + msg.topic)
-            if len(msg_processed) > 5:
-                result = saveDevice(msg_processed)
-                if result:
-                    saveMeasure(msg_processed)
+            # if len(msg_processed) > 5:
+            result = saveDevice(msg_processed)
+            if result:
+                saveMeasure(msg_processed)
         else:
             print("Bad topic provided!!")
             # raise Exception("Bad topic provided!!") 
@@ -168,22 +168,20 @@ def send_notification():
     # Another trick
 
 
+# Save device properties
 def saveDevice(msg_processed):
     try:
-        caseid = msg_processed['caseid']       
-        mode = int(msg_processed['mode'])
+        caseid = msg_processed.get('caseid')       
+        mode = msg_processed.get('mode')
         my_device = Device.objects.get(caseid=caseid)
         my_device.mode = __getModeFromIntValue(mode)
 
         if int(mode) == 4:
             my_device.interval_bat_s = None
             my_device.interval_sending_h = None
-            # my_device.autonomy = None
-            my_device.autonomy = 0
         else:
-            my_device.interval_bat_s = msg_processed['interval_bat_s']
-            my_device.interval_sending_h = msg_processed['interval_sending_h']
-            my_device.autonomy = msg_processed['autonomy']
+            my_device.interval_bat_s = (None, msg_processed.get('interval_bat_s'))[msg_processed.get('interval_bat_s') is not None]
+            my_device.interval_sending_h = (None, msg_processed.get('interval_sending_h'))[msg_processed.get('interval_sending_h') is not None]
 
         my_device.save()
 
@@ -191,23 +189,30 @@ def saveDevice(msg_processed):
         return True
     except Exception as e:
         print(f"Error occured when trying to update device properties : {e}")
-        return False
+    return False
 
 
+# Save measure into DataBase
 def saveMeasure(msg_processed):
     try:
         caseid = msg_processed['caseid']
-        longitude = msg_processed.get('longitude')
-        latitude = msg_processed.get('latitude')
-        soc = int(msg_processed.get("soc"))
-        autonomy = msg_processed.get("autonomy")
+        longitude = (None, msg_processed.get('longitude'))[msg_processed.get('longitude') is not None]
+        latitude = (None, msg_processed.get('latitude'))[msg_processed.get('latitude') is not None]
+        energy_in = (None, msg_processed.get('energy_in'))[msg_processed.get('energy_in') is not None]
+        energy_out = (None, msg_processed.get('energy_out'))[msg_processed.get('energy_out') is not None]
+        temperature = (None, msg_processed.get('temperature'))[msg_processed.get('temperature') is not None]
         
+        if(longitude is None and latitude is None and energy_in is None and energy_out is None and temperature is None):
+            raise Exception("Unable to save measure with invalids inputs values")
+
         my_device = Device.objects.get(caseid=caseid)
 
         measured_data = {
             'latitude': latitude,
             'longitude': longitude,
-            'soc': soc,
+            'energy_in': energy_in,
+            'energy_out': energy_out,
+            'temperature': temperature,
             'time': datetime.now(),
             'device_id': my_device.id,
         }
@@ -219,59 +224,77 @@ def saveMeasure(msg_processed):
 
             # Save Notifications
             try:
-                __saveNotification(caseid, autonomy, soc)
-            except Exception as exc:
-                print(f"Error save notification : {exc}")
+                __saveNotification(caseid, energy_in, energy_out, temperature)
+            except Exception as e:
+                print(f"Error while saving notification : {e}")
 
             # When values are valid we try to send an email   
             try: 
-                __sendMail(caseid, autonomy, soc)
-            except Exception as exc:
-                print(f"Error while sending mail : {exc}")
+                __sendMail(caseid, energy_in, energy_out, temperature)
+            except Exception as e:
+                print(f"Error while sending mail : {e}")
         else:
             print("Failed to save measure, " + measured_serializer.errors)
-    except Exception as exc:
-        print(f"Error occured when trying to save measure : {exc}")
+    except Exception as e:
+        print(f"Error occured when trying to save measure : {e}")
 
 
+# Formate string receive by Electronic Module and return a collection (Dictionnary)
 def __process_msg(msg):
     new_msg = msg.replace('{', '')
     new_msg = new_msg.replace('}', '')
     new_msg = new_msg.split(',')
     data = {}
-    try:
-        for val in new_msg:
-            new_val = val.split(':')
-            if len(new_val) > 1:
-                if 'caseid' in str(new_val[0]).lower():
-                    data['caseid'] = str(new_val[1]).strip()
-                elif 'soc' in str(new_val[0]).lower():
-                    data['soc'] = str(new_val[1]).strip()
-                elif 'latitude' in str(new_val[0]).lower():
-                    data['latitude'] = str(new_val[1]).strip()
-                    if(len(data['latitude']) <= 2):
-                        raise Exception("Invalid latitude value with a much less value")
-                elif 'longitude' in str(new_val[0]).lower():
-                    data['longitude'] = str(new_val[1]).strip()
-                    if(len(data['longitude']) <= 2):
+
+    for val in new_msg:
+        new_val = val.split(':')
+        if len(new_val) > 1:
+            source_value = str(new_val[0])
+            expected_value = str(new_val[1]).strip()
+            try:
+                if 'caseid' in source_value:
+                    if(expected_value is not None):
+                        # Valid Device ID
+                        data['caseid'] = expected_value
+                    else:
+                        raise Exception("Device ID has not specified")
+                elif 'mode' in source_value:
+                    if(expected_value is not None):
+                        # Valid Device Mode
+                        expected_value = str(expected_value).replace("'", '')
+                        data['mode'] = int(expected_value)
+                    else:
+                        raise Exception("Mode has not specified")
+                # For all other data, we skiped each of them which was not specified
+                elif 'IN' in source_value:
+                    data['energy_in'] = float(expected_value)
+                elif 'OUT' in source_value:
+                    data['energy_out'] = float(expected_value)
+                elif 'latitude' in source_value:
+                    if(len(expected_value) <= 2):
+                        raise Exception("Invalid latitude with a much less value")
+                    else:
+                        data['latitude'] = float(expected_value)
+                elif 'longitude' in source_value:
+                    if(len(expected_value) <= 2):
                         raise Exception("Invalid longitude value with a much less value")
-                elif 'mode' in str(new_val[0]).lower():
-                    data['mode'] = str(new_val[1]).strip()
-                elif 'interval_bat_s' in str(new_val[0]).lower():
-                    data['interval_bat_s'] = str(new_val[1]).strip()
-                elif 'interval_sending_h' in str(new_val[0]).lower():
-                    new_val[1] = str(new_val[1]).replace("'", '')
-                    new_val[1] = str(new_val[1]).replace('"', '')
-                    data['interval_sending_h'] = str(new_val[1]).strip()
-                elif 'autonomy' in str(new_val[0]).lower():
-                    new_val[1] = str(new_val[1]).replace("'", '')
-                    new_val[1] = str(new_val[1]).replace('"', '')
-                    data['autonomy'] = str(new_val[1]).strip()
-    except Exception as exc:
-        print("Error occurred. Format message is not valid")
+                    else:
+                        data['longitude'] = float(expected_value)
+                elif 'temp' in source_value:
+                    expected_value = str(expected_value).replace("'", '')
+                    data['temperature'] = float(expected_value)
+                elif 'interval_bat_s' in source_value:
+                    expected_value = str(expected_value).replace("'", '')
+                    data['interval_bat_s'] = int(expected_value)
+                elif 'interval_sending_h' in source_value:
+                    expected_value = str(expected_value).replace("'", '')
+                    data['interval_sending_h'] = int(expected_value)          
+            except Exception as e:
+                print("Error occurred. Format message is not valid, " + str(e))
     return data
 
 
+# Get string values for mode by passing int coresponding mode
 def __getModeFromIntValue(mode):
     if(mode == 1):
         return constants.BAT_GPS_MODE
@@ -285,9 +308,13 @@ def __getModeFromIntValue(mode):
         return constants.BAT_MODE
 
 
-def __saveNotification(caseid, autonomy, soc):
-    if(float(soc) <= 50):
-        data = __setNotificationParams(caseid, autonomy, soc)
+# Handle save notification into DB
+def __saveNotification(caseid, energy_in, energy_out, temperature):
+    if(energy_in is None and energy_out is None and temperature is None):
+        raise Exception("Unable to save notification with invalids inputs values")
+
+    if(float(temperature) > 0):
+        data = __setNotificationParams(caseid, energy_in, energy_out, temperature)
         notification = data['notification_message']
         dev = Device.objects.get(caseid=caseid)
         if dev:
@@ -307,28 +334,30 @@ def __saveNotification(caseid, autonomy, soc):
 
 
 # Specify email content message and subject
-def __setEmailMessageParams(caseid, autonomy, soc):
+def __setEmailMessageParams(caseid, energy_in, energy_out, temperature):
     data  = {}
     data['subject_email'] = "#" + caseid + "# Alerte malette MSF"
-    data['email_message'] = f"Device ID: {caseid} has currently battery level of {soc}%. It battery estimated time remaining is {autonomy}hour(s)".format(
-        soc)
+    data['email_message'] = f"Device ID: {caseid} has currently Input energy of {energy_in} and Output energy of {energy_out}. Battery estimated temperature is {temperature}°C"
     return data
 
 
 # Specify notification content message
-def __setNotificationParams(caseid, autonomy, soc):
+def __setNotificationParams(caseid, energy_in, energy_out, temperature):
     data  = {}
-    data['notification_message'] = f"Device ID: {caseid} has currently battery level of {soc}%. It battery estimated time remaining is {autonomy}hour(s)"
+    data['notification_message'] = f"Device ID: {caseid} has currently Input energy of {energy_in} and Output energy of {energy_out}. Battery estimated temperature is {temperature}°C"
     return data
 
 
 # The mail has sent only if the SOC level is less than or egal 50 or soc <= 50
-def __sendMail(caseid, autonomy, soc):
+def __sendMail(caseid, energy_in, energy_out, temperature):
+    if(energy_in is None and energy_out is None and temperature is None):
+        raise Exception("Unable to send email with invalids inputs values")
+
     email_from = settings.EMAIL_HOST_USER
     data = {}
-    if(float(soc) <= 50):
+    if(temperature < 15 and float(temperature) > 35):
         if (email_from != 'EMAIL_HOST_USER' or email_from != None):
-            data = __setEmailMessageParams(caseid, autonomy, soc)
+            data = __setEmailMessageParams(caseid, energy_in, energy_out, temperature)
             
             dev = Device.objects.get(caseid=caseid)
             email_list = []
